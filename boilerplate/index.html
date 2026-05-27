@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="description" content="A data story about climate change, extreme weather, and human exposure.">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Man Made Natural Disasters</title>
+
+		<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+		<link rel="stylesheet" href="css/style.css">
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
+	</head>
+
+	<body>
+		<nav class="story-nav" aria-label="Page sections">
+			<a class="brand" href="#home">Introduction</a>
+			<div class="nav-links">
+
+				<a href="#temperature">Temperature</a>
+				<a href="#co2">CO2 Levels</a>
+				<a href="#events">Extreme Weather</a>
+				<a href="#correlation"> Is This A Coincidence?</a>
+				<a href="#why">Why Care?</a>
+				<a href="#people">People</a>
+				<a href="#action">Action</a>
+			</div>
+		</nav>
+
+		<header id="home" class="hero-section">
+			<div class="hero-overlay"></div>
+			<div class="hero-content">
+				<p class="eyebrow">Climate and Weather Events Data Story</p>
+				<h1>Man Made Natural Disasters</h1>
+				<p class="lede">A scroll-driven look at how rising temperatures, emissions, and extreme weather events connect to the places and people most exposed to climate risk.</p>
+				<div class="hero-stats" aria-label="Climate story highlights">
+					<div>
+						<strong>1.2 C</strong>
+						<span>Approx. global warming since the late 1800s</span>
+					</div>
+					<div>
+						<strong>5x</strong>
+						<span>More billion-dollar U.S. disasters than the 1980s</span>
+					</div>
+					<div>
+						<strong>2030</strong>
+						<span>Critical decade for adaptation and emissions cuts</span>
+					</div>
+				</div>
+			</div>
+			<a class="scroll-cue" href="#temperature">Start the story</a>
+		</header>
+
+		<main>
+
+			<section id="temperature" class="story-section split-section">
+				<div class="sticky-copy">
+					<p class="eyebrow">Temperature Change</p>
+					<h2>Temperatures keep climbing in the United States...</h2>
+					<p> !! The chart uses fake starter data. Swap in with dataset later!! </p>
+				</div>
+				<div class="viz-panel">
+					<div class="viz-header">
+						<div>
+							<h3>US Temperature Data</h3>
+							<p>Sample values in degrees Celsius</p>
+						</div>
+						<span class="tag">1850-2020</span>
+					</div>
+					<div id="temperature-chart" class="chart" role="img" aria-label="Line chart of rising global temperature anomaly"></div>
+				</div>
+			</section>
+
+			<section id="co2" class="story-section split-section co2-section">
+				<div class="sticky-copy">
+					<p class="eyebrow">Carbon dioxide levels</p>
+					<h2>CO2 has risen sharply alongside modern warming.</h2>
+					<p>Atmospheric carbon dioxide traps heat in the climate system. This placeholder chart shows the long-term increase in CO2 concentration</p>
+					<p>explain context for raising CO2 levels in the US and contribution to warmer temps</p>
+				</div>
+				<div class="viz-panel">
+					<div class="viz-header">
+						<div>
+							<h3>Atmospheric CO2 Concentration</h3>
+							<p>Sample historical values in parts per million</p>
+						</div>
+						<span class="tag">1850-2020</span>
+					</div>
+					<div id="co2-chart" class="chart" role="img" aria-label="Area chart showing rising atmospheric carbon dioxide levels"></div>
+					<div class="co2-summary" aria-label="Carbon dioxide summary statistics">
+						<div>
+							<span>1850</span>
+							<strong>285 ppm</strong>
+						</div>
+						<div>
+							<span>2020</span>
+							<strong>414 ppm</strong>
+						</div>
+						<div>
+							<span>Increase</span>
+							<strong>45%</strong>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="quote-section">
+				<p>Climate change quote maybe to transition to weather events section.</p>
+			</section>
+
+			<section id="events" class="story-section split-section reverse">
+				<div class="sticky-copy">
+					<p class="eyebrow">Extreme weather events</p>
+					<h2>In the U.S there has been a noticeable increase of extreme weather events.</h2>
+					<p>Use this section for interactive visual. There is a filter buttons and a D3 bubble map-style to build from in main.js.</p>
+					<p>add any necessary info here for elaborating on visual </p>
+				</div>
+				<div class="viz-panel">
+					<div class="viz-header">
+						<div>
+							<h3>Extreme Weather Event Explorer</h3>
+							<p>Starter interactive view by event type</p>
+						</div>
+						<button id="reset-events" class="small-button" type="button">Reset</button>
+					</div>
+					<div class="filter-row" aria-label="Filter event type">
+						<button class="filter-button active" type="button" data-type="all">All</button>
+						<button class="filter-button" type="button" data-type="heat">Heat</button>
+						<button class="filter-button" type="button" data-type="storm">Storm</button>
+						<button class="filter-button" type="button" data-type="drought">Drought</button>
+						<button class="filter-button" type="button" data-type="wildfire">Wildfire</button>
+					</div>
+					<div id="event-chart" class="chart event-chart" role="img" aria-label="Bubble chart showing sample extreme weather events"></div>
+				</div>
+			</section>
+
+			<section id="correlation" class="story-section">
+				<div class="section-copy narrow">
+					<p class="eyebrow">Correlation between Weather and CO2 levels</p>
+					<h2>Is the positive correlation really a coincidence?</h2>
+					<p>Here explain how from data we see a correlation and provide research context to also back up
+						the scientific explanation behind this CO2 and weather events correlation</p>
+				</div>
+				<div id="correlation-visual" class="correlation-visual" role="img" aria-label="Correlation visual placeholder">
+					<span>Correlation D3 visual goes here</span>
+				</div>
+			</section>
+
+			<section id="why" class="story-section intro-grid">
+				<div class="section-copy">
+					<p class="eyebrow">Why this matters</p>
+					<h2>Why exactly should you care about this...</h2>
+				</div>
+				<div class="narrative-block">
+					<p> Briefly introduce why everyone should care about climate change and the impact it has on the economy </p>
+					<p>Maybe can discuss anything else related </p>
+					<div id="economic-impact-visual" class="economic-impact-visual" role="img" aria-label="Economic impact visual placeholder">
+						<span>Economic impact visual goes here</span>
+					</div>
+				</div>
+			</section>
+
+			<section id="people" class="story-section split-section">
+				<div class="sticky-copy">
+					<p class="eyebrow">Human exposure</p>
+					<h2>Extreme weather events affect a large number of people</h2>
+					<p>Discuss the numbers and maybe give context for the visual as to why certain years show a large number of deaths</p>
+				</div>
+				<div class="viz-panel">
+					<div class="viz-header">
+						<div>
+							<h3>Human Deaths</h3>
+							<p>Sample data</p>
+						</div>
+						<span class="tag">2000-2019</span>
+					</div>
+					<div id="exposure-chart" class="chart" role="img" aria-label="Bar chart comparing human deaths"></div>
+				</div>
+			</section>
+
+			<section id="action" class="story-section action-section">
+				<div class="section-copy narrow">
+					<p class="eyebrow">What can be done?</p>
+					<h2>How can YOU help</h2>
+				</div>
+				<div class="action-grid">
+					<article>
+						<span>01</span>
+						<h3>Alternative 1</h3>
+						<p>maybe later will change this layout</p>
+					</article>
+					<article>
+						<span>02</span>
+						<h3>Alternative 2</h3>
+						<p>maybe later will change this layout</p>
+					</article>
+					<article>
+						<span>03</span>
+						<h3>Alternative 3</h3>
+						<p>maybe later will change this layout</p>
+					</article>
+				</div>
+			</section>
+		</main>
+
+		<footer class="site-footer">
+			<p>Add citations, final datasets, and team information before publishing.</p>
+		</footer>
+
+		<script src="js/main.js"></script>
+	</body>
+</html>
