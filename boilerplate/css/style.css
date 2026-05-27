@@ -221,7 +221,8 @@ h3 {
 }
 
 .economic-impact-visual,
-.correlation-visual {
+.correlation-visual,
+.chart-placeholder {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -239,9 +240,19 @@ h3 {
 }
 
 .correlation-visual {
+	display: block;
 	max-width: 1050px;
 	min-height: 440px;
 	margin: 40px auto 0;
+	border-style: solid;
+	font-weight: 400;
+	text-transform: none;
+}
+
+.chart svg,
+.correlation-visual svg {
+	width: 100%;
+	height: auto;
 }
 
 .split-section {
@@ -336,6 +347,10 @@ h3 {
 .chart {
 	width: 100%;
 	min-height: 390px;
+}
+
+.co2-trend-chart {
+	min-height: 420px;
 }
 
 .co2-section {

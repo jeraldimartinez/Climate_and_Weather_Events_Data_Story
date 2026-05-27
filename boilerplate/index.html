@@ -61,12 +61,14 @@
 				<div class="viz-panel">
 					<div class="viz-header">
 						<div>
-							<h3>US Temperature Data</h3>
-							<p>Sample values in degrees Celsius</p>
+							<h3>Temperature Visual Placeholder</h3>
+							<p>Placeholder for a future temperature-focused visual</p>
 						</div>
-						<span class="tag">1850-2020</span>
+						<span class="tag">Coming soon</span>
 					</div>
-					<div id="temperature-chart" class="chart" role="img" aria-label="Line chart of rising global temperature anomaly"></div>
+					<div class="chart-placeholder" role="img" aria-label="Temperature visual placeholder">
+						<span>Temperature visual goes here</span>
+					</div>
 				</div>
 			</section>
 
@@ -80,24 +82,25 @@
 				<div class="viz-panel">
 					<div class="viz-header">
 						<div>
-							<h3>Atmospheric CO2 Concentration</h3>
-							<p>Sample historical values in parts per million</p>
+							<h3>Temperature and CO2 Trends</h3>
+							<p>Sample values with separate axes for temperature and CO2</p>
 						</div>
-						<span class="tag">1850-2020</span>
+						<span class="tag">2000-2024</span>
 					</div>
-					<div id="co2-chart" class="chart" role="img" aria-label="Area chart showing rising atmospheric carbon dioxide levels"></div>
+					<!-- CO2 SECTION CHART: the D3 two-line chart is rendered into this div from drawCO2Chart() in js/main.js. -->
+					<div id="co2-chart" class="chart co2-trend-chart" role="img" aria-label="Two-line chart comparing average temperature and carbon dioxide levels over time"></div>
 					<div class="co2-summary" aria-label="Carbon dioxide summary statistics">
 						<div>
-							<span>1850</span>
-							<strong>285 ppm</strong>
+							<span>2000</span>
+							<strong>370 ppm</strong>
 						</div>
 						<div>
-							<span>2020</span>
-							<strong>414 ppm</strong>
+							<span>2024</span>
+							<strong>424 ppm</strong>
 						</div>
 						<div>
 							<span>Increase</span>
-							<strong>45%</strong>
+							<strong>15%</strong>
 						</div>
 					</div>
 				</div>
@@ -140,9 +143,8 @@
 					<p>Here explain how from data we see a correlation and provide research context to also back up
 						the scientific explanation behind this CO2 and weather events correlation</p>
 				</div>
-				<div id="correlation-visual" class="correlation-visual" role="img" aria-label="Correlation visual placeholder">
-					<span>Correlation D3 visual goes here</span>
-				</div>
+				<!-- CORRELATION SECTION CHART: the D3 bubble scatter chart is rendered into this div from drawCorrelationChart() in js/main.js. -->
+				<div id="correlation-visual" class="correlation-visual" role="img" aria-label="Bubble scatter chart showing carbon dioxide levels, disaster events, people affected, and average economic cost"></div>
 			</section>
 
 			<section id="why" class="story-section intro-grid">
