@@ -24,7 +24,7 @@ body {
 	margin: 0;
 	background: var(--paper);
 	color: var(--ink);
-	font-family: "Inter", Arial, sans-serif;
+	font: 16px "Inter", Arial, sans-serif;
 	line-height: 1.6;
 }
 
@@ -65,7 +65,7 @@ svg {
 	display: flex;
 	align-items: center;
 	gap: clamp(10px, 2vw, 24px);
-	font-size: 0.86rem;
+	font-size: 14px;
 	font-weight: 700;
 }
 
@@ -107,7 +107,7 @@ svg {
 .eyebrow {
 	margin: 0 0 14px;
 	color: var(--red);
-	font-size: 0.78rem;
+	font-size: 12px;
 	font-weight: 800;
 	letter-spacing: 0.12em;
 	text-transform: uppercase;
@@ -132,7 +132,7 @@ h2 {
 
 h1 {
 	max-width: 780px;
-	font-size: clamp(4rem, 11vw, 8.5rem);
+	font-size: clamp(64px, 11vw, 136px);
 	font-weight: 700;
 }
 
@@ -142,7 +142,7 @@ h2 {
 }
 
 h3 {
-	font-size: 1.15rem;
+	font-size: 18px;
 	font-weight: 700;
 }
 
@@ -150,7 +150,7 @@ h3 {
 	max-width: 680px;
 	margin: 24px 0 0;
 	color: rgba(255, 255, 255, 0.88);
-	font-size: clamp(1.08rem, 2vw, 1.4rem);
+	font-size: clamp(17px, 2vw, 22px);
 }
 
 .hero-stats {
@@ -172,7 +172,7 @@ h3 {
 
 .hero-stats strong {
 	display: block;
-	font-size: clamp(2rem, 4vw, 3.6rem);
+	font-size: clamp(32px, 4vw, 58px);
 	line-height: 1;
 }
 
@@ -180,7 +180,7 @@ h3 {
 	display: block;
 	margin-top: 10px;
 	color: rgba(255, 255, 255, 0.78);
-	font-size: 0.9rem;
+	font-size: 14px;
 }
 
 .scroll-cue {
@@ -217,7 +217,7 @@ h3 {
 .narrative-block {
 	padding-top: 12px;
 	color: #354653;
-	font-size: 1.08rem;
+	font-size: 17px;
 }
 
 .economic-impact-visual,
@@ -233,7 +233,7 @@ h3 {
 	border: 1px dashed #b9c4c4;
 	border-radius: 8px;
 	color: var(--muted);
-	font-size: 0.9rem;
+	font-size: 14px;
 	font-weight: 800;
 	text-align: center;
 	text-transform: uppercase;
@@ -288,7 +288,7 @@ h3 {
 .section-copy p:not(.eyebrow) {
 	margin: 22px 0 0;
 	color: var(--muted);
-	font-size: 1.05rem;
+	font-size: 17px;
 }
 
 .viz-panel {
@@ -311,7 +311,7 @@ h3 {
 .viz-header p {
 	margin: 6px 0 0;
 	color: var(--muted);
-	font-size: 0.92rem;
+	font-size: 15px;
 }
 
 .tag,
@@ -321,7 +321,7 @@ h3 {
 	border-radius: 999px;
 	background: #f7faf9;
 	color: #344350;
-	font-size: 0.8rem;
+	font-size: 13px;
 	font-weight: 800;
 }
 
@@ -369,7 +369,7 @@ h3 {
 	min-height: 420px;
 	padding: 24px;
 	color: var(--muted);
-	font-size: 0.95rem;
+	font-size: 15px;
 	font-weight: 800;
 	text-align: center;
 }
@@ -395,7 +395,7 @@ h3 {
 .co2-summary span {
 	display: block;
 	color: var(--muted);
-	font-size: 0.78rem;
+	font-size: 12px;
 	font-weight: 800;
 	text-transform: uppercase;
 }
@@ -404,7 +404,7 @@ h3 {
 	display: block;
 	margin-top: 6px;
 	color: var(--forest);
-	font-size: clamp(1.15rem, 2.4vw, 1.9rem);
+	font-size: clamp(18px, 2.4vw, 30px);
 	line-height: 1;
 }
 
@@ -413,17 +413,27 @@ h3 {
 }
 
 .human-impact-view {
-	min-height: 640px;
+	min-height: 0;
+}
+
+#people .viz-panel {
+	min-height: 0;
+	padding: clamp(14px, 2vw, 20px);
+}
+
+#people .viz-header {
+	margin-bottom: 12px;
 }
 
 .human-impact-layout {
 	display: grid;
-	grid-template-columns: minmax(0, 1.55fr) minmax(270px, 0.85fr);
-	gap: 18px;
-	align-items: start;
+	grid-template-columns: 1fr;
+	gap: 12px;
+	align-items: stretch;
 }
 
 .affected-linked-panel {
+	width: 100%;
 	min-width: 0;
 	overflow: hidden;
 	background:
@@ -454,9 +464,13 @@ h3 {
 	stroke: rgba(200, 75, 49, 0.4);
 }
 
+.impact-row:hover .impact-bar {
+	opacity: 0.72;
+}
+
 .impact-year-label {
 	fill: #344350;
-	font-size: 11px;
+	font-size: 10px;
 	font-weight: 800;
 }
 
@@ -493,9 +507,11 @@ h3 {
 
 .impact-detail-panel {
 	display: grid;
-	grid-template-columns: 1fr;
-	gap: 18px;
-	padding: 22px;
+	grid-template-columns: minmax(180px, 0.7fr) minmax(240px, 1.3fr);
+	gap: 14px;
+	align-items: center;
+	width: 100%;
+	padding: 16px;
 	background: #102029;
 	border-radius: 10px;
 	color: #fff;
@@ -505,13 +521,13 @@ h3 {
 .impact-icon-panel p {
 	margin: 6px 0 0;
 	color: rgba(255, 255, 255, 0.72);
-	font-size: 0.92rem;
+	font-size: 13px;
 }
 
 .impact-detail-kicker {
 	display: block;
 	color: #f1c36c;
-	font-size: 0.78rem;
+	font-size: 11px;
 	font-weight: 800;
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
@@ -519,37 +535,23 @@ h3 {
 
 .impact-total {
 	display: block;
-	margin-top: 8px;
+	margin-top: 6px;
 	color: #fff;
 	font-family: "Source Serif 4", Georgia, serif;
-	font-size: clamp(3rem, 4.5vw, 4.8rem);
-	line-height: 0.9;
-}
-
-.impact-meter {
-	overflow: hidden;
-	height: 10px;
-	margin-top: 18px;
-	background: rgba(255, 255, 255, 0.16);
-	border-radius: 999px;
-}
-
-.impact-meter span {
-	display: block;
-	height: 100%;
-	background: #c84b31;
-	border-radius: inherit;
+	font-size: clamp(32px, 3vw, 52px);
+	line-height: 0.95;
+	overflow-wrap: anywhere;
 }
 
 .impact-stat-grid {
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 10px;
-	margin-top: 16px;
+	gap: 8px;
+	margin-top: 10px;
 }
 
 .impact-stat-grid div {
-	padding: 12px;
+	padding: 9px;
 	background: rgba(255, 255, 255, 0.1);
 	border: 1px solid rgba(255, 255, 255, 0.14);
 	border-radius: 8px;
@@ -558,7 +560,7 @@ h3 {
 .impact-stat-grid span {
 	display: block;
 	color: rgba(255, 255, 255, 0.66);
-	font-size: 0.72rem;
+	font-size: 11px;
 	font-weight: 800;
 	text-transform: uppercase;
 }
@@ -566,17 +568,30 @@ h3 {
 .impact-stat-grid strong {
 	display: block;
 	margin-top: 4px;
-	font-size: 1.25rem;
+	font-size: 17px;
 	line-height: 1;
 }
 
 .impact-icon-panel {
-	align-self: center;
+	align-self: stretch;
 	min-width: 0;
 }
 
-.impact-icon-panel svg {
-	margin-top: 10px;
+.impact-icon-scroll {
+	max-height: 150px;
+	margin-top: 8px;
+	overflow-y: auto;
+	padding-right: 4px;
+}
+
+.impact-icon-scroll svg {
+	margin-top: 0;
+}
+
+.impact-icon-note {
+	margin-top: 2px !important;
+	color: rgba(255, 255, 255, 0.56) !important;
+	font-size: 12px !important;
 }
 
 .impact-icon circle,
@@ -609,7 +624,7 @@ h3 {
 	max-width: 980px;
 	margin: 0 auto;
 	font-family: "Source Serif 4", Georgia, serif;
-	font-size: clamp(2.4rem, 6vw, 6.4rem);
+	font-size: clamp(38px, 6vw, 102px);
 	font-weight: 700;
 	line-height: 1.02;
 	text-align: center;
@@ -651,7 +666,7 @@ h3 {
 	padding: 30px clamp(20px, 5vw, 76px);
 	background: var(--ink);
 	color: rgba(255, 255, 255, 0.72);
-	font-size: 0.9rem;
+	font-size: 14px;
 }
 
 .site-footer p {
@@ -705,11 +720,11 @@ h3 {
 
 @media (max-width: 560px) {
 	h1 {
-		font-size: 3.4rem;
+		font-size: 54px;
 	}
 
 	h2 {
-		font-size: 2.1rem;
+		font-size: 34px;
 	}
 
 	.hero-stats div {

@@ -839,11 +839,12 @@ class CorrelationVis {
 			.text("Weather-related disaster events");
 
 		chart.append("text")
-			.attr("x", innerWidth * 0.55)
+			.attr("x", innerWidth / 2)
 			.attr("y", y(d3.max(vis.displayData, d => d.disasterEvents)) - 18)
 			.attr("fill", "#17212b")
 			.attr("font-size", 12)
 			.attr("font-weight", 800)
+			.attr("text-anchor", "middle")
 			.text("Temperature vs Extreme Weather Events");
 
 		const legend = svg.append("g")
@@ -1003,6 +1004,18 @@ class EconomicImpactVis {
 			.domain([0, d3.max(vis.displayData, getDamage) * 1.15])
 			.nice()
 			.range([innerHeight, 0]);
+		const xTickValues = x.domain().filter((year, index) => index % 4 === 0);
+		const lastYear = x.domain().at(-1);
+
+		if (!xTickValues.includes(lastYear)) {
+			const previousTick = xTickValues.at(-1);
+
+			if (lastYear - previousTick < 3) {
+				xTickValues.pop();
+			}
+
+			xTickValues.push(lastYear);
+		}
 
 		chart.append("g")
 			.attr("class", "grid")
@@ -1027,7 +1040,7 @@ class EconomicImpactVis {
 			.attr("class", "axis")
 			.attr("transform", `translate(0,${innerHeight})`)
 			.call(d3.axisBottom(x)
-				.tickValues(x.domain().filter((year, index, years) => index % 4 === 0 || index === years.length - 1))
+				.tickValues(xTickValues)
 				.tickFormat(d3.format("d")));
 
 		chart.append("g")
@@ -1172,18 +1185,18 @@ class HumanImpactVis {
 
 		const layout = container.append("div")
 			.attr("class", "human-impact-layout");
-		const chartWidth = isCompact ? width : Math.max(520, Math.floor(width * 0.64));
+		const chartWidth = Math.max(340, width);
 		const affectedMargin = {
-			top: 62,
-			right: isCompact ? 34 : 42,
-			bottom: 54,
-			left: isCompact ? 54 : 62
+			top: 48,
+			right: isCompact ? 26 : 34,
+			bottom: 38,
+			left: isCompact ? 48 : 56
 		};
-		const rowHeight = isCompact ? 24 : 26;
+		const rowHeight = isCompact ? 15 : 16;
 		const affectedHeight = affectedMargin.top + affectedMargin.bottom + vis.displayData.length * rowHeight;
 		const innerWidth = chartWidth - affectedMargin.left - affectedMargin.right;
 		const innerHeight = affectedHeight - affectedMargin.top - affectedMargin.bottom;
-		const barHeight = Math.max(10, Math.min(18, rowHeight * 0.58));
+		const barHeight = Math.max(7, Math.min(11, rowHeight * 0.56));
 		const x = d3.scaleLinear()
 			.domain([0, maxDeaths])
 			.nice()
@@ -1195,9 +1208,17 @@ class HumanImpactVis {
 		const deathColor = d3.scaleLinear()
 			.domain([0, maxDeaths * 0.55, maxDeaths])
 			.range(["#cfe8d6", "#d9a441", "#c84b31"]);
-		const formatAffectedLabel = value => value >= 1000000
-			? `${formatNumber(value / 1000000)}M`
-			: formatComma(value);
+		const formatAffectedLabel = value => {
+			if (value >= 1000000) {
+				return `${formatNumber(value / 1000000)}M`;
+			}
+
+			if (value >= 1000) {
+				return `${formatNumber(value / 1000)}K`;
+			}
+
+			return formatComma(value);
+		};
 		const formatDeathLabel = value => formatComma(value);
 		const axisTicks = isCompact ? 3 : 4;
 
@@ -1212,13 +1233,13 @@ class HumanImpactVis {
 			.attr("x", affectedMargin.left)
 			.attr("y", 20)
 			.attr("fill", "#17212b")
-			.attr("font-size", 15)
+			.attr("font-size", 14)
 			.attr("font-weight", 800)
 			.text("Deaths from weather-related disasters");
 
 		svg.append("text")
 			.attr("x", affectedMargin.left)
-			.attr("y", 40)
+			.attr("y", 36)
 			.attr("fill", "#64717f")
 			.attr("font-size", 11)
 			.attr("font-weight", 700)
@@ -1243,24 +1264,31 @@ class HumanImpactVis {
 			.attr("tabindex", 0)
 			.attr("role", "button")
 			.attr("aria-label", d => `Select ${getYear(d)}: ${formatComma(getDeaths(d))} deaths and ${formatComma(d.peopleAffected)} people affected`)
-			.on("click", (event, d) => {
-				vis.selectedYear = d.year;
-				vis.wrangleData();
+			.on("click", function(event, d) {
+				selectYear(d);
 			})
-			.on("keydown", (event, d) => {
+			.on("keydown", function(event, d) {
 				if (event.key === "Enter" || event.key === " ") {
 					event.preventDefault();
-					vis.selectedYear = d.year;
-					vis.wrangleData();
+					selectYear(d);
 				}
 			});
+
+		function selectYear(d) {
+			if (vis.selectedYear === d.year) {
+				return;
+			}
+
+			vis.selectedYear = d.year;
+			vis.wrangleData();
+		}
 
 		rows.append("rect")
 			.attr("class", "impact-row-hitbox")
 			.attr("x", -affectedMargin.left + 6)
-			.attr("y", d => y(getYear(d)) - 4)
+			.attr("y", d => y(getYear(d)) - 2)
 			.attr("width", innerWidth + affectedMargin.left + affectedMargin.right - 12)
-			.attr("height", y.bandwidth() + 8);
+			.attr("height", y.bandwidth() + 4);
 
 		rows.append("text")
 			.attr("class", "impact-year-label")
@@ -1296,9 +1324,12 @@ class HumanImpactVis {
 			.attr("text-anchor", d => x(getDeaths(d)) > innerWidth - 86 ? "end" : "start")
 			.text(d => formatDeathLabel(getDeaths(d)));
 
+		rows.append("title")
+			.text(d => `${getYear(d)}: ${formatComma(getDeaths(d))} deaths, ${formatComma(d.peopleAffected)} people affected`);
+
 		chart.append("g")
 			.attr("class", "axis human-impact-axis")
-			.attr("transform", `translate(0,${innerHeight + 14})`)
+			.attr("transform", `translate(0,${innerHeight + 10})`)
 			.call(d3.axisBottom(x)
 				.ticks(axisTicks)
 				.tickFormat(value => formatDeathLabel(value)));
@@ -1307,7 +1338,7 @@ class HumanImpactVis {
 
 		chart.append("text")
 			.attr("x", 0)
-			.attr("y", innerHeight + 48)
+			.attr("y", innerHeight + 32)
 			.attr("fill", "#64717f")
 			.attr("font-size", 11)
 			.attr("font-weight", 700)
@@ -1316,23 +1347,28 @@ class HumanImpactVis {
 		chart.append("text")
 			.attr("class", "impact-overflow-label")
 			.attr("x", innerWidth)
-			.attr("y", -12)
+			.attr("y", -8)
 			.attr("text-anchor", "end")
 			.text(`Max: ${formatDeathLabel(maxDeathsRow.totalDeaths)}`);
 
 		const detail = layout.append("div")
 			.attr("class", "impact-detail-panel")
 			.attr("aria-live", "polite");
-		const affectedIconValue = Math.max(
-			100000,
-			Math.ceil((maxAffectedRow.peopleAffected / 24) / 100000) * 100000
-		);
+		const defaultAffectedIconValue = 20000;
+		const affectedIconValue = selectedYearData.year === 2016
+			? 1000000
+			: defaultAffectedIconValue;
 		const affectedIconCount = selectedYearData.peopleAffected > 0
 			? Math.max(1, Math.ceil(selectedYearData.peopleAffected / affectedIconValue))
 			: 0;
-		const iconColumns = isCompact ? 8 : 6;
-		const iconWidth = 30;
-		const iconHeight = 40;
+		const useDenseIcons = affectedIconCount > 120;
+		const iconScale = useDenseIcons ? 0.62 : 1;
+		const iconWidth = useDenseIcons ? 16 : 30;
+		const iconHeight = useDenseIcons ? 24 : 40;
+		const iconPanelWidth = isCompact
+			? Math.max(240, width - 44)
+			: Math.max(280, Math.floor((width - 44) * 0.48));
+		const iconColumns = Math.max(6, Math.floor(iconPanelWidth / iconWidth));
 		const iconRows = Math.max(1, Math.ceil(affectedIconCount / iconColumns));
 		const iconSvgWidth = iconColumns * iconWidth;
 		const iconSvgHeight = iconRows * iconHeight + 18;
@@ -1350,15 +1386,6 @@ class HumanImpactVis {
 
 		detailCopy.append("p")
 			.text("people affected by weather-related disasters");
-
-		const meter = detailCopy.append("div")
-			.attr("class", "impact-meter")
-			.attr("aria-hidden", "true");
-
-		meter.append("span")
-			.style("width", selectedYearData.peopleAffected > 0
-				? `${Math.max(2, (selectedYearData.peopleAffected / maxAffectedRow.peopleAffected) * 100)}%`
-				: "0%");
 
 		const statGrid = detailCopy.append("div")
 			.attr("class", "impact-stat-grid");
@@ -1378,7 +1405,16 @@ class HumanImpactVis {
 		iconPanel.append("p")
 			.text(`Each figure represents about ${formatAffectedLabel(affectedIconValue)} people affected.`);
 
-		const iconSvg = iconPanel.append("svg")
+		if (selectedYearData.year === 2016) {
+			iconPanel.append("p")
+				.attr("class", "impact-icon-note")
+				.text("2016 uses a larger icon value because its affected total is an outlier.");
+		}
+
+		const iconScroll = iconPanel.append("div")
+			.attr("class", "impact-icon-scroll");
+
+		const iconSvg = iconScroll.append("svg")
 			.attr("viewBox", `0 0 ${iconSvgWidth} ${iconSvgHeight}`)
 			.attr("aria-hidden", "true");
 
@@ -1386,7 +1422,7 @@ class HumanImpactVis {
 			.data(d3.range(affectedIconCount))
 			.join("g")
 			.attr("class", "impact-icon")
-			.attr("transform", index => `translate(${(index % iconColumns) * iconWidth + 6},${Math.floor(index / iconColumns) * iconHeight + 4})`);
+			.attr("transform", index => `translate(${(index % iconColumns) * iconWidth + (useDenseIcons ? 2 : 6)},${Math.floor(index / iconColumns) * iconHeight + 4}) scale(${iconScale})`);
 
 		icons.append("circle")
 			.attr("cx", 9)
