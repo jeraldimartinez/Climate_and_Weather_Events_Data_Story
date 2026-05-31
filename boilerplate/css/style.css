@@ -137,13 +137,13 @@ h1 {
 }
 
 h2 {
-	font-size: clamp(2.2rem, 5vw, 5rem);
-	font-weight: 700;
+	font-size: 70px;
+	font-weight: 680;
 }
 
 h3 {
 	font-size: 1.15rem;
-	font-weight: 800;
+	font-weight: 700;
 }
 
 .lede {
@@ -249,7 +249,16 @@ h3 {
 	text-transform: none;
 }
 
+.economic-impact-visual {
+	display: block;
+	min-height: 360px;
+	border-style: solid;
+	font-weight: 400;
+	text-transform: none;
+}
+
 .chart svg,
+.economic-impact-visual svg,
 .correlation-visual svg {
 	width: 100%;
 	height: auto;
@@ -353,6 +362,18 @@ h3 {
 	min-height: 420px;
 }
 
+.chart-status {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 420px;
+	padding: 24px;
+	color: var(--muted);
+	font-size: 0.95rem;
+	font-weight: 800;
+	text-align: center;
+}
+
 .co2-section {
 	background: #eef3ef;
 }
@@ -383,12 +404,185 @@ h3 {
 	display: block;
 	margin-top: 6px;
 	color: var(--forest);
-	font-size: clamp(1.35rem, 3vw, 2.2rem);
+	font-size: clamp(1.15rem, 2.4vw, 1.9rem);
 	line-height: 1;
 }
 
 .event-chart {
 	min-height: 430px;
+}
+
+.human-impact-view {
+	min-height: 640px;
+}
+
+.human-impact-layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1.55fr) minmax(270px, 0.85fr);
+	gap: 18px;
+	align-items: start;
+}
+
+.affected-linked-panel {
+	min-width: 0;
+	overflow: hidden;
+	background:
+		linear-gradient(180deg, rgba(246, 241, 233, 0.85), rgba(255, 255, 255, 0.96)),
+		repeating-linear-gradient(0deg, rgba(75, 131, 166, 0.08) 0 1px, transparent 1px 24px);
+	border: 1px solid var(--line);
+	border-radius: 10px;
+}
+
+.impact-row {
+	cursor: pointer;
+	outline: none;
+}
+
+.impact-row-hitbox {
+	fill: transparent;
+	stroke: transparent;
+}
+
+.impact-row:hover .impact-row-hitbox,
+.impact-row:focus .impact-row-hitbox {
+	fill: rgba(28, 124, 118, 0.08);
+	stroke: rgba(28, 124, 118, 0.28);
+}
+
+.impact-row.selected .impact-row-hitbox {
+	fill: rgba(200, 75, 49, 0.12);
+	stroke: rgba(200, 75, 49, 0.4);
+}
+
+.impact-year-label {
+	fill: #344350;
+	font-size: 11px;
+	font-weight: 800;
+}
+
+.impact-overflow-label {
+	fill: #c84b31;
+	font-size: 10px;
+	font-weight: 800;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+.impact-bar-track {
+	fill: rgba(23, 33, 43, 0.08);
+}
+
+.impact-bar {
+	pointer-events: none;
+}
+
+.impact-value-label {
+	fill: #344350;
+	font-size: 10px;
+	font-weight: 800;
+	pointer-events: none;
+}
+
+.impact-row.selected .impact-value-label {
+	fill: #17212b;
+}
+
+.grid.human-impact-grid line {
+	stroke: rgba(23, 33, 43, 0.08);
+}
+
+.impact-detail-panel {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 18px;
+	padding: 22px;
+	background: #102029;
+	border-radius: 10px;
+	color: #fff;
+}
+
+.impact-detail-copy p,
+.impact-icon-panel p {
+	margin: 6px 0 0;
+	color: rgba(255, 255, 255, 0.72);
+	font-size: 0.92rem;
+}
+
+.impact-detail-kicker {
+	display: block;
+	color: #f1c36c;
+	font-size: 0.78rem;
+	font-weight: 800;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.impact-total {
+	display: block;
+	margin-top: 8px;
+	color: #fff;
+	font-family: "Source Serif 4", Georgia, serif;
+	font-size: clamp(3rem, 4.5vw, 4.8rem);
+	line-height: 0.9;
+}
+
+.impact-meter {
+	overflow: hidden;
+	height: 10px;
+	margin-top: 18px;
+	background: rgba(255, 255, 255, 0.16);
+	border-radius: 999px;
+}
+
+.impact-meter span {
+	display: block;
+	height: 100%;
+	background: #c84b31;
+	border-radius: inherit;
+}
+
+.impact-stat-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 10px;
+	margin-top: 16px;
+}
+
+.impact-stat-grid div {
+	padding: 12px;
+	background: rgba(255, 255, 255, 0.1);
+	border: 1px solid rgba(255, 255, 255, 0.14);
+	border-radius: 8px;
+}
+
+.impact-stat-grid span {
+	display: block;
+	color: rgba(255, 255, 255, 0.66);
+	font-size: 0.72rem;
+	font-weight: 800;
+	text-transform: uppercase;
+}
+
+.impact-stat-grid strong {
+	display: block;
+	margin-top: 4px;
+	font-size: 1.25rem;
+	line-height: 1;
+}
+
+.impact-icon-panel {
+	align-self: center;
+	min-width: 0;
+}
+
+.impact-icon-panel svg {
+	margin-top: 10px;
+}
+
+.impact-icon circle,
+.impact-icon rect {
+	fill: #f1c36c;
+	opacity: 0.92;
 }
 
 .axis path,
@@ -496,8 +690,16 @@ h3 {
 		order: 0;
 	}
 
+	.human-impact-layout {
+		grid-template-columns: 1fr;
+	}
+
 	.sticky-copy {
 		position: static;
+	}
+
+	.impact-detail-panel {
+		grid-template-columns: 1fr;
 	}
 }
 
