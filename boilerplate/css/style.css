@@ -367,6 +367,20 @@ h4 {
 	min-height: 420px;
 }
 
+.climograph-chart {
+	min-height: 470px;
+}
+
+.climograph-chart .timeline-brush .selection {
+	fill: rgba(28, 124, 118, 0.18);
+	stroke: var(--teal);
+	stroke-width: 1.5px;
+}
+
+.climograph-chart .timeline-brush .handle {
+	fill: var(--ink);
+}
+
 .chart-status {
 	display: flex;
 	align-items: center;
@@ -414,7 +428,45 @@ h4 {
 }
 
 .event-chart {
-	min-height: 430px;
+	min-height: 620px;
+}
+
+.event-chart .event-year-label,
+.event-chart .event-type-label,
+.event-chart .event-impact-label,
+.event-chart .event-count-label {
+	font-weight: 800;
+}
+
+.event-chart .event-year-label {
+	fill: #344350;
+	font-size: 10px;
+}
+
+.event-chart .event-type-label {
+	fill: #17212b;
+	font-size: 11px;
+}
+
+.event-chart .event-impact-label {
+	fill: #64717f;
+	font-size: 10px;
+}
+
+.event-chart .event-count-label {
+	fill: #ffffff;
+	font-size: 10px;
+	pointer-events: none;
+}
+
+.event-chart .event-timeline-row:hover .event-branch {
+	stroke-opacity: 0.95;
+	stroke-width: 4px;
+}
+
+.event-chart .event-timeline-row:hover .event-impact-bubble {
+	stroke: #17212b;
+	stroke-width: 2.5px;
 }
 
 .human-impact-view {
