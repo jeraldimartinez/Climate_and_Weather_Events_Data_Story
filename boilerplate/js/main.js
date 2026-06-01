@@ -56,6 +56,26 @@ function formatNumber(value, digits = 1) {
 	return Number(value).toFixed(digits).replace(/\.0$/, "");
 }
 
+function appendCalloutText(parent, lines, options) {
+	const text = parent.append("text")
+		.attr("x", options.x)
+		.attr("y", options.y)
+		.attr("fill", options.fill || "#17212b")
+		.attr("font-size", options.fontSize || 11)
+		.attr("font-weight", options.fontWeight || 800)
+		.attr("text-anchor", options.textAnchor || "start");
+	const lineHeight = options.lineHeight || 13;
+
+	lines.forEach((line, index) => {
+		text.append("tspan")
+			.attr("x", options.x)
+			.attr("dy", index === 0 ? 0 : lineHeight)
+			.text(line);
+	});
+
+	return text;
+}
+
 function getPaddedDomain(values, paddingRatio = 0.12) {
 	const numericValues = values.filter(Number.isFinite);
 	const [min, max] = d3.extent(numericValues);
@@ -1063,14 +1083,78 @@ class EconomicImpactVis {
 			.attr("font-weight", 700)
 			.text("Weather-related U.S. disasters, billions of adjusted USD");
 
-		chart.append("text")
-			.attr("x", x(getYear(maxDamageYear)) + x.bandwidth() / 2)
-			.attr("y", y(getDamage(maxDamageYear)) - 10)
-			.attr("fill", "#c84b31")
-			.attr("font-size", 11)
-			.attr("font-weight", 800)
-			.attr("text-anchor", "middle")
-			.text(`${getYear(maxDamageYear)}: $${formatNumber(getDamage(maxDamageYear))}B`);
+		const economicAnnotations = [
+			{
+				year: 2005,
+				lines: ["2005: Hurricane Katrina", "major damage spike"],
+				color: "#c84b31",
+				labelY: 12
+			},
+			{
+				year: 2017,
+				lines: ["2017: Harvey, Irma, Maria", "large economic impact"],
+				color: "#9b5c12",
+				labelY: 44
+			},
+			{
+				year: 2024,
+				lines: ["2024: Hurricane Helene", "major damage spike"],
+				color: "#c84b31",
+				labelY: 76,
+				textAnchor: "end"
+			}
+		];
+		const annotationLayer = chart.append("g")
+			.attr("class", "chart-annotations")
+			.attr("pointer-events", "none");
+
+		economicAnnotations.forEach(annotation => {
+			const row = vis.displayData.find(item => getYear(item) === annotation.year);
+
+			if (!row) {
+				return;
+			}
+
+			const barLeft = x(getYear(row));
+
+			if (barLeft === undefined) {
+				return;
+			}
+
+			const barCenter = barLeft + x.bandwidth() / 2;
+			const barTop = y(getDamage(row));
+			const textAnchor = annotation.textAnchor || (
+				barCenter > innerWidth - 150 ? "end" : "middle"
+			);
+			const textX = textAnchor === "end"
+				? Math.min(innerWidth - 4, barCenter + 18)
+				: textAnchor === "start"
+					? Math.max(4, barCenter - 18)
+					: barCenter;
+
+			annotationLayer.append("line")
+				.attr("x1", barCenter)
+				.attr("y1", barTop)
+				.attr("x2", textX)
+				.attr("y2", annotation.labelY + 7)
+				.attr("stroke", annotation.color)
+				.attr("stroke-width", 1.4)
+				.attr("stroke-dasharray", "3 3")
+				.attr("opacity", 0.78);
+
+			annotationLayer.append("circle")
+				.attr("cx", barCenter)
+				.attr("cy", barTop)
+				.attr("r", 3)
+				.attr("fill", annotation.color);
+
+			appendCalloutText(annotationLayer, annotation.lines, {
+				x: textX,
+				y: annotation.labelY,
+				fill: annotation.color,
+				textAnchor
+			});
+		});
 	}
 }
 
@@ -1327,6 +1411,72 @@ class HumanImpactVis {
 		rows.append("title")
 			.text(d => `${getYear(d)}: ${formatComma(getDeaths(d))} deaths, ${formatComma(d.peopleAffected)} people affected`);
 
+		const deathAnnotations = [
+			{
+				year: 2005,
+				lines: ["2005: Hurricane Katrina", "death toll spike"],
+				color: "#c84b31"
+			},
+			{
+				year: 2024,
+				lines: ["2024: Hurricane Helene", "major death toll"],
+				color: "#9b5c12"
+			}
+		];
+		const deathAnnotationLayer = chart.append("g")
+			.attr("class", "chart-annotations death-annotations")
+			.attr("pointer-events", "none");
+
+		deathAnnotations.forEach(annotation => {
+			const row = vis.displayData.find(item => getYear(item) === annotation.year);
+
+			if (!row) {
+				return;
+			}
+
+			const rowTop = y(getYear(row));
+
+			if (rowTop === undefined) {
+				return;
+			}
+
+			const rowMiddle = rowTop + y.bandwidth() / 2;
+			const barEnd = x(getDeaths(row));
+			const textAnchor = barEnd > innerWidth * 0.72 ? "end" : "start";
+			const textX = textAnchor === "end"
+				? Math.max(118, barEnd - 16)
+				: Math.min(innerWidth - 118, barEnd + 16);
+			const textY = Math.max(12, Math.min(innerHeight - 22, rowMiddle - 13));
+
+			deathAnnotationLayer.append("line")
+				.attr("x1", barEnd)
+				.attr("y1", rowMiddle)
+				.attr("x2", textX)
+				.attr("y2", textY + 6)
+				.attr("stroke", annotation.color)
+				.attr("stroke-width", 1.4)
+				.attr("stroke-dasharray", "3 3")
+				.attr("opacity", 0.82);
+
+			deathAnnotationLayer.append("circle")
+				.attr("cx", barEnd)
+				.attr("cy", rowMiddle)
+				.attr("r", 3)
+				.attr("fill", annotation.color);
+
+			appendCalloutText(deathAnnotationLayer, annotation.lines, {
+				x: textX,
+				y: textY,
+				fill: annotation.color,
+				textAnchor,
+				lineHeight: 12
+			})
+				.attr("paint-order", "stroke")
+				.attr("stroke", "#fff")
+				.attr("stroke-width", 3)
+				.attr("stroke-linejoin", "round");
+		});
+
 		chart.append("g")
 			.attr("class", "axis human-impact-axis")
 			.attr("transform", `translate(0,${innerHeight + 10})`)
@@ -1399,6 +1549,17 @@ class HumanImpactVis {
 			stat.append("strong").text(item.value);
 		});
 
+		const selectedYearNotes = {
+			2005: "Deaths were especially high in 2005 because of Hurricane Katrina.",
+			2024: "Deaths were especially high in 2024 because of Hurricane Helene."
+		};
+
+		if (selectedYearNotes[selectedYearData.year]) {
+			detailCopy.append("p")
+				.attr("class", "impact-context-note")
+				.text(selectedYearNotes[selectedYearData.year]);
+		}
+
 		const iconPanel = detail.append("div")
 			.attr("class", "impact-icon-panel");
 
@@ -1408,7 +1569,7 @@ class HumanImpactVis {
 		if (selectedYearData.year === 2016) {
 			iconPanel.append("p")
 				.attr("class", "impact-icon-note")
-				.text("2016 uses a larger icon value because its affected total is an outlier.");
+				.text("2016 uses a larger icon value.");
 		}
 
 		const iconScroll = iconPanel.append("div")
