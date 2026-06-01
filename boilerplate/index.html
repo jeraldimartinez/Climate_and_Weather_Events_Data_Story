@@ -42,21 +42,22 @@
 			<section id="temperature" class="story-section split-section">
 				<div class="sticky-copy">
 					<p class="eyebrow">Temperature Change</p>
-					<h2>Temperatures keep climbing in the United States...</h2>
-					<p> !! The chart uses fake starter data. Swap in with dataset later!! </p>
+					<h2>Temperature & precipitation in the USA</h2>
+					<p>
+						Over the past 23 years, the change in average temperature from year to year has increased
+						drastically. The growing extremes
+					</p>
 				</div>
 				<div class="viz-panel">
 					<div class="viz-header">
 						<div>
-							<h3>Temperature Visual Placeholder</h3>
-							<p>Placeholder for a future temperature-focused visual</p>
+							<h3>Temperature and Precipitation Climograph</h3>
+							<p>Adjust the selection of the timeline at the bottom to focus on particular ranges <br>
+								Mouse over the data points to see particular values</p>
 						</div>
-						<span class="tag">Coming soon</span>
+						<span id="climograph-year-tag" class="tag">Loading data</span>
 					</div>
-					<!-- TEMPERATURE VISUAL -->
-					<div class="chart-placeholder" role="img" aria-label="Temperature visual placeholder">
-						<span>Temperature visual goes here</span>
-					</div>
+					<div id="climograph-chart" class="chart climograph-chart" role="img" aria-label="Climograph showing average U.S. temperature and precipitation by year"></div>
 				</div>
 			</section>
 			<!-- CO2 SECTION -->
@@ -100,33 +101,28 @@
 
 			<!-- QUOTE SECTION -->
 			<section class="quote-section">
-				<p>Climate change quote maybe to transition to weather events section.</p>
+				<p>"We are the first generation to feel the effect of climate change and the last generation who can do something about it." — Barack Obama</p>
 			</section>
 			<!-- EXTREME WEATHER EVENTS SECTION -->
 			<section id="events" class="story-section split-section reverse">
 				<div class="sticky-copy">
 					<p class="eyebrow">Extreme weather events</p>
-					<h2>In the U.S there has been a noticeable increase of extreme weather events.</h2>
-					<p>Use this section for interactive visual. There is a filter buttons and a D3 bubble map-style to build from in main.js.</p>
-					<p>add any necessary info here for elaborating on visual </p>
+					<h2>Increase of extreme weather events.</h2>
+					<p>
+						Each year highlights the weather-related disaster type with the most reported events.
+						Branch size reflects the combined scale of damages, deaths, and people affected.
+					</p>
 				</div>
 				<!-- EXTREME WEATHER EVENTS VISUAL -->
 				<div class="viz-panel">
 					<div class="viz-header">
 						<div>
-							<h3>Extreme Weather Event Explorer</h3>
-							<p>Starter interactive view by event type</p>
+							<h3>Largest Event Count by Year</h3>
+							<p>Timeline branches show the top disaster type and its reported impacts</p>
 						</div>
-						<button id="reset-events" class="small-button" type="button">Reset</button>
+						<span id="event-timeline-year-tag" class="tag">Loading data</span>
 					</div>
-					<div class="filter-row" aria-label="Filter event type">
-						<button class="filter-button active" type="button" data-type="all">All</button>
-						<button class="filter-button" type="button" data-type="heat">Heat</button>
-						<button class="filter-button" type="button" data-type="storm">Storm</button>
-						<button class="filter-button" type="button" data-type="drought">Drought</button>
-						<button class="filter-button" type="button" data-type="wildfire">Wildfire</button>
-					</div>
-					<div id="event-chart" class="chart event-chart" role="img" aria-label="Bubble chart showing sample extreme weather events"></div>
+					<div id="event-chart" class="chart event-chart" role="img" aria-label="Timeline showing the disaster type with the most events in each year"></div>
 				</div>
 			</section>
 
