@@ -26,6 +26,135 @@ const disasterTypeColors = {
 	Wildfire: "#38664f"
 };
 
+const disasterTypeIconIds = {
+	Drought: "event-icon-drought",
+	"Extreme temperature": "event-icon-temperature",
+	Flood: "event-icon-flood",
+	"Mass movement (wet)": "event-icon-rock",
+	Storm: "event-icon-storm",
+	Wildfire: "event-icon-fire"
+};
+
+function iconIdForDisasterType(type) {
+	return disasterTypeIconIds[type] || "event-icon-storm";
+}
+
+function appendDisasterIconSymbols(svg) {
+	const defs = svg.append("defs");
+
+	const storm = defs.append("symbol")
+		.attr("id", disasterTypeIconIds.Storm)
+		.attr("viewBox", "0 0 32 32");
+	storm.append("path")
+		.attr("d", "M8 22h16a6 6 0 0 0 1-11.9A8 8 0 0 0 9.8 8.2 6.4 6.4 0 0 0 8 22Z")
+		.attr("fill", "#dceaf2")
+		.attr("stroke", "#4b83a6")
+		.attr("stroke-width", 2)
+		.attr("stroke-linejoin", "round");
+	storm.append("path")
+		.attr("d", "M17 17 12 27l6-2-3 7 10-13-6 2 3-4Z")
+		.attr("fill", "#f2c94c")
+		.attr("stroke", "#9a6b00")
+		.attr("stroke-width", 1.2)
+		.attr("stroke-linejoin", "round");
+
+	const flood = defs.append("symbol")
+		.attr("id", disasterTypeIconIds.Flood)
+		.attr("viewBox", "0 0 32 32");
+	flood.append("path")
+		.attr("d", "M3 18c4-5 8-5 13 0s9 5 13 0v10H3Z")
+		.attr("fill", "#48b7d1")
+		.attr("stroke", "#1c7c76")
+		.attr("stroke-width", 2)
+		.attr("stroke-linejoin", "round");
+	flood.append("path")
+		.attr("d", "M3 22c4-4 8-4 13 0s9 4 13 0")
+		.attr("fill", "none")
+		.attr("stroke", "#ffffff")
+		.attr("stroke-width", 2.2)
+		.attr("stroke-linecap", "round");
+	flood.append("path")
+		.attr("d", "M7 16c3-2 6-2 9 1")
+		.attr("fill", "none")
+		.attr("stroke", "#b8edf5")
+		.attr("stroke-width", 2)
+		.attr("stroke-linecap", "round");
+
+	const fire = defs.append("symbol")
+		.attr("id", disasterTypeIconIds.Wildfire)
+		.attr("viewBox", "0 0 32 32");
+	fire.append("path")
+		.attr("d", "M16 30C9 28 6 23 8 17c1-4 5-6 5-13 5 3 10 8 10 15 2-2 3-4 3-7 4 5 4 12 1 16-3 4-7 5-11 2Z")
+		.attr("fill", "#f15a24")
+		.attr("stroke", "#38664f")
+		.attr("stroke-width", 1.8)
+		.attr("stroke-linejoin", "round");
+	fire.append("path")
+		.attr("d", "M16 28c-4-2-5-5-3-9 1-2 3-4 3-7 4 4 6 8 4 13-1 2-2 3-4 3Z")
+		.attr("fill", "#ffd166");
+
+	const thermometer = defs.append("symbol")
+		.attr("id", disasterTypeIconIds["Extreme temperature"])
+		.attr("viewBox", "0 0 32 32");
+	thermometer.append("rect")
+		.attr("x", 13)
+		.attr("y", 4)
+		.attr("width", 8)
+		.attr("height", 20)
+		.attr("rx", 4)
+		.attr("fill", "#fff4ed")
+		.attr("stroke", "#c84b31")
+		.attr("stroke-width", 2);
+	thermometer.append("circle")
+		.attr("cx", 17)
+		.attr("cy", 24)
+		.attr("r", 7)
+		.attr("fill", "#ff6b4a")
+		.attr("stroke", "#c84b31")
+		.attr("stroke-width", 2);
+	thermometer.append("line")
+		.attr("x1", 17)
+		.attr("x2", 17)
+		.attr("y1", 9)
+		.attr("y2", 24)
+		.attr("stroke", "#ff6b4a")
+		.attr("stroke-width", 3)
+		.attr("stroke-linecap", "round");
+
+	const drought = defs.append("symbol")
+		.attr("id", disasterTypeIconIds.Drought)
+		.attr("viewBox", "0 0 32 32");
+	drought.append("path")
+		.attr("d", "M16 3C10 11 7 16 7 22c0 5 4 9 9 9s9-4 9-9c0-6-3-11-9-19Z")
+		.attr("fill", "#9bd3ea")
+		.attr("stroke", "#d9a441")
+		.attr("stroke-width", 2)
+		.attr("stroke-linejoin", "round");
+	drought.append("path")
+		.attr("d", "M12 22c0 3 2 5 5 5")
+		.attr("fill", "none")
+		.attr("stroke", "#ffffff")
+		.attr("stroke-width", 2)
+		.attr("stroke-linecap", "round");
+
+	const rock = defs.append("symbol")
+		.attr("id", disasterTypeIconIds["Mass movement (wet)"])
+		.attr("viewBox", "0 0 32 32");
+	rock.append("path")
+		.attr("d", "M5 22 10 10l8-5 9 8 4 11-10 7-12-2Z")
+		.attr("fill", "#a9875b")
+		.attr("stroke", "#5f472d")
+		.attr("stroke-width", 2)
+		.attr("stroke-linejoin", "round");
+	rock.append("path")
+		.attr("d", "M10 10 17 18l10-5M17 18l4 13M9 29l8-11")
+		.attr("fill", "none")
+		.attr("stroke", "#d7c4a6")
+		.attr("stroke-width", 1.5)
+		.attr("stroke-linecap", "round")
+		.attr("stroke-linejoin", "round");
+}
+
 function clearChart(selector) {
 	d3.select(selector).selectAll("*").remove();
 }
@@ -272,38 +401,56 @@ function prepareEventTimelineData(rows) {
 
 	return d3.rollups(
 		parsedRows,
-		yearRows => d3.rollups(
-			yearRows,
-			typeRows => ({
-				disasterEvents: d3.sum(typeRows, d => d.totalEvents || 0),
-				peopleAffected: d3.sum(typeRows, d => d.totalAffected || 0),
-				totalDeaths: d3.sum(typeRows, d => d.totalDeaths || 0),
-				totalDamage: d3.sum(typeRows, d => d.totalDamage || 0),
-				rows: typeRows.length
-			}),
-			d => d.disasterType
-		)
-			.map(([disasterType, values]) => ({
+		yearRows => {
+			const typeTotals = d3.rollups(
+				yearRows,
+				typeRows => ({
+					disasterEvents: d3.sum(typeRows, d => d.totalEvents || 0),
+					peopleAffected: d3.sum(typeRows, d => d.totalAffected || 0),
+					totalDeaths: d3.sum(typeRows, d => d.totalDeaths || 0),
+					totalDamage: d3.sum(typeRows, d => d.totalDamage || 0),
+					rows: typeRows.length
+				}),
+				d => d.disasterType
+			)
+				.map(([disasterType, values]) => ({
+					disasterType,
+					disasterEvents: values.disasterEvents,
+					peopleAffected: values.peopleAffected,
+					peopleAffectedMillions: values.peopleAffected / 1000000,
+					totalDeaths: values.totalDeaths,
+					totalDamage: values.totalDamage,
+					totalDamageBillions: values.totalDamage / 1000000000,
+					rows: values.rows
+				}))
+				.sort((a, b) =>
+					b.disasterEvents - a.disasterEvents ||
+					d3.ascending(a.disasterType, b.disasterType)
+				);
+			const topType = typeTotals[0];
+			const peopleAffected = d3.sum(yearRows, d => d.totalAffected || 0);
+			const totalDeaths = d3.sum(yearRows, d => d.totalDeaths || 0);
+			const totalDamage = d3.sum(yearRows, d => d.totalDamage || 0);
+			const annualEvents = d3.sum(yearRows, d => d.totalEvents || 0);
+
+			return {
 				year: yearRows[0].year,
-				disasterType,
-				disasterEvents: values.disasterEvents,
-				peopleAffected: values.peopleAffected,
-				peopleAffectedMillions: values.peopleAffected / 1000000,
-				totalDeaths: values.totalDeaths,
-				totalDamage: values.totalDamage,
-				totalDamageBillions: values.totalDamage / 1000000000,
-				rows: values.rows
-			})),
+				topDisasterType: topType.disasterType,
+				topDisasterEvents: topType.disasterEvents,
+				annualEvents,
+				peopleAffected,
+				peopleAffectedMillions: peopleAffected / 1000000,
+				totalDeaths,
+				totalDamage,
+				totalDamageBillions: totalDamage / 1000000000,
+				rows: yearRows.length,
+				topTypeRows: topType.rows,
+				typeTotals
+			};
+		},
 		d => d.year
 	)
-		.map(([year, disasterTypes]) => disasterTypes
-			.slice()
-			.sort((a, b) =>
-				b.disasterEvents - a.disasterEvents ||
-				b.totalDamage - a.totalDamage ||
-				b.peopleAffected - a.peopleAffected ||
-				b.totalDeaths - a.totalDeaths
-			)[0])
+		.map(([, values]) => values)
 		.filter(Boolean)
 		.sort((a, b) => a.year - b.year);
 }
@@ -496,7 +643,7 @@ class ClimographVis {
 		const selectedSpan = Math.max(1, selectedEnd - selectedStart + 1);
 		const barWidth = Math.max(6, Math.min(30, innerWidth / selectedSpan * 0.58));
 		const formatComma = d3.format(",");
-		const formatPointLabel = d => `${getYear(d)}\nAverage temperature: ${formatNumber(getTemperature(d))} C\nAverage precipitation: ${formatComma(Math.round(getPrecipitation(d)))} mm\nRows averaged: ${d.observations}`;
+		const formatPointLabel = d => `${getYear(d)}\nAverage temperature: ${formatNumber(getTemperature(d))} C\nAverage precipitation: ${formatComma(Math.round(getPrecipitation(d)))} mm`;
 
 		const svg = d3.select("#" + vis.parentElement)
 			.append("svg")
@@ -567,9 +714,12 @@ class ClimographVis {
 			.text(formatPointLabel);
 
 		const xTickCount = isCompact ? 4 : 7;
-		const xTicks = allYears
+		let xTicks = allYears
 			.filter(year => year >= selectedStart && year <= selectedEnd)
 			.filter((year, index, years) => index === 0 || index === years.length - 1 || index % Math.ceil(years.length / xTickCount) === 0);
+		if (selectedEnd === lastYear && selectedStart !== selectedEnd) {
+			xTicks = xTicks.filter(year => year !== lastYear);
+		}
 
 		chart.append("g")
 			.attr("class", "axis")
@@ -1092,6 +1242,11 @@ class ExtremeEventTimelineVis {
 		this.loadState = options.loadState || "loading";
 		this.loadError = options.loadError || null;
 		this.tagElement = options.tagElement || null;
+		this.defaultDisasterType = "__top__";
+		this.selectedDisasterType = this.defaultDisasterType;
+		this.hiddenLayers = new Set();
+		this.focusedYears = [];
+		this.typeOptions = [];
 
 		this.initVis();
 	}
@@ -1108,7 +1263,106 @@ class ExtremeEventTimelineVis {
 		vis.data = data;
 		vis.loadState = options.loadState || vis.loadState;
 		vis.loadError = options.loadError || null;
+		vis.typeOptions = vis.getTypeOptions();
+		if (
+			vis.selectedDisasterType !== vis.defaultDisasterType &&
+			!vis.typeOptions.includes(vis.selectedDisasterType)
+		) {
+			vis.selectedDisasterType = vis.defaultDisasterType;
+		}
+		vis.focusedYears = vis.focusedYears.filter(year =>
+			vis.data.some(row => row.year === year)
+		);
 		vis.wrangleData();
+	}
+
+	getTypeOptions() {
+		let vis = this;
+
+		return d3.rollups(
+			vis.data.flatMap(row => row.typeTotals || []),
+			values => d3.sum(values, d => d.disasterEvents || 0),
+			d => d.disasterType
+		)
+			.filter(([disasterType]) => disasterType)
+			.sort(([firstType, firstEvents], [secondType, secondEvents]) =>
+				secondEvents - firstEvents ||
+				d3.ascending(firstType, secondType)
+			)
+			.map(([disasterType]) => disasterType);
+	}
+
+	getDisplayData() {
+		let vis = this;
+
+		return vis.data.map(yearRow => {
+			if (vis.selectedDisasterType === vis.defaultDisasterType) {
+				return {
+					year: yearRow.year,
+					disasterType: yearRow.topDisasterType,
+					topDisasterType: yearRow.topDisasterType,
+					disasterEvents: yearRow.topDisasterEvents,
+					annualEvents: yearRow.annualEvents,
+					peopleAffected: yearRow.peopleAffected,
+					peopleAffectedMillions: yearRow.peopleAffectedMillions,
+					totalDeaths: yearRow.totalDeaths,
+					totalDamage: yearRow.totalDamage,
+					totalDamageBillions: yearRow.totalDamageBillions,
+					rows: yearRow.rows,
+					metricScope: "All weather-related disasters"
+				};
+			}
+
+			const typeRow = (yearRow.typeTotals || [])
+				.find(row => row.disasterType === vis.selectedDisasterType);
+			const disasterEvents = typeRow?.disasterEvents || 0;
+			const peopleAffected = typeRow?.peopleAffected || 0;
+			const totalDeaths = typeRow?.totalDeaths || 0;
+			const totalDamage = typeRow?.totalDamage || 0;
+
+			return {
+				year: yearRow.year,
+				disasterType: vis.selectedDisasterType,
+				topDisasterType: yearRow.topDisasterType,
+				disasterEvents,
+				annualEvents: disasterEvents,
+				peopleAffected,
+				peopleAffectedMillions: peopleAffected / 1000000,
+				totalDeaths,
+				totalDamage,
+				totalDamageBillions: totalDamage / 1000000000,
+				rows: typeRow?.rows || 0,
+				metricScope: `${vis.selectedDisasterType} disasters`
+			};
+		});
+	}
+
+	getMetricMaxima() {
+		let vis = this;
+		const metricRows = [];
+
+		vis.data.forEach(row => {
+			metricRows.push({
+				totalDeaths: row.totalDeaths,
+				peopleAffected: row.peopleAffected,
+				totalDamage: row.totalDamage
+			});
+			(row.typeTotals || []).forEach(typeRow => metricRows.push(typeRow));
+		});
+
+		return {
+			deaths: d3.max(metricRows, d => d.totalDeaths) || 1,
+			affected: d3.max(metricRows, d => d.peopleAffected) || 1,
+			damage: d3.max(metricRows, d => d.totalDamage) || 1
+		};
+	}
+
+	getEventDomainMax() {
+		let vis = this;
+
+		return d3.max(
+			vis.data.flatMap(row => (row.typeTotals || []).map(typeRow => typeRow.disasterEvents || 0))
+		) || 1;
 	}
 
 	showStatus(message, tagText) {
@@ -1141,15 +1395,29 @@ class ExtremeEventTimelineVis {
 
 		const firstYear = vis.data[0].year;
 		const lastYear = vis.data.at(-1).year;
+		const filterLabel = vis.selectedDisasterType === vis.defaultDisasterType
+			? "Most frequent"
+			: vis.selectedDisasterType;
+		const selectedYears = vis.focusedYears.slice().sort((a, b) => a - b);
+		const hasFocusedYears = selectedYears.length > 0;
+		const yearLabel = hasFocusedYears
+			? selectedYears.length === 1
+				? `${selectedYears[0]}`
+				: selectedYears.every((year, index) => index === 0 || year === selectedYears[index - 1] + 1)
+					? `${selectedYears[0]}-${selectedYears.at(-1)}`
+					: `${selectedYears.length} selected years`
+			: `${firstYear}-${lastYear}`;
 
 		if (tag) {
-			tag.textContent = `${firstYear}-${lastYear}`;
+			tag.textContent = `${filterLabel}, ${yearLabel}`;
 		}
 
 		if (chart) {
 			chart.setAttribute(
 				"aria-label",
-				`Timeline from ${firstYear} to ${lastYear} showing the disaster type with the most U.S. weather-related events in each year. Bubble size combines adjusted damage, deaths, and people affected.`
+				hasFocusedYears
+					? `Focused scatter plot for ${yearLabel} showing disaster event count and proportional deaths, people affected, and adjusted damages.`
+					: `Scatter plot from ${firstYear} to ${lastYear} showing yearly disaster event counts. Dot color shows disaster type, y position shows event count, and rings show proportional deaths, people affected, and adjusted damages.`
 			);
 		}
 	}
@@ -1172,7 +1440,18 @@ class ExtremeEventTimelineVis {
 			return;
 		}
 
-		vis.displayData = vis.data;
+		vis.typeOptions = vis.getTypeOptions();
+		if (
+			vis.selectedDisasterType !== vis.defaultDisasterType &&
+			!vis.typeOptions.includes(vis.selectedDisasterType)
+		) {
+			vis.selectedDisasterType = vis.defaultDisasterType;
+		}
+		vis.focusedYears = vis.focusedYears.filter(year =>
+			vis.data.some(row => row.year === year)
+		);
+
+		vis.displayData = vis.getDisplayData();
 		vis.updateSummary();
 		vis.updateVis();
 	}
@@ -1182,39 +1461,186 @@ class ExtremeEventTimelineVis {
 
 		clearChart("#" + vis.parentElement);
 
+		const root = d3.select("#" + vis.parentElement);
+		const filterOptions = vis.typeOptions.map(type => ({
+			value: type,
+			label: type,
+			color: disasterTypeColors[type] || "#64717f"
+		}));
+		const allYears = vis.data.map(d => d.year);
+		const controls = root.append("div")
+			.attr("class", "filter-row event-filter-row")
+			.attr("role", "group")
+			.attr("aria-label", "Extreme weather chart controls");
+
+		const buttons = controls.selectAll("button")
+			.data(filterOptions)
+			.join("button")
+			.attr("type", "button")
+			.attr("class", d => `filter-button event-type-button${d.value === vis.selectedDisasterType ? " active" : ""}`)
+			.attr("aria-pressed", d => d.value === vis.selectedDisasterType)
+			.on("click", function(event, d) {
+				event.stopPropagation();
+
+				if (vis.selectedDisasterType === d.value) {
+					vis.selectedDisasterType = vis.defaultDisasterType;
+				} else {
+					vis.selectedDisasterType = d.value;
+				}
+
+				vis.wrangleData();
+			});
+
+		buttons.append("span")
+			.attr("class", "event-type-swatch")
+			.style("background", d => d.color);
+
+		buttons.append("span")
+			.text(d => d.label);
+
+		const yearFocusId = `${vis.parentElement}-year-focus`;
+		const yearFocus = controls.append("div")
+			.attr("class", "event-year-focus");
+
+		yearFocus.append("label")
+			.attr("for", yearFocusId)
+			.text("Focus years");
+
+		const yearSelect = yearFocus.append("select")
+			.attr("id", yearFocusId)
+			.attr("class", "event-year-select")
+			.attr("multiple", true)
+			.attr("size", Math.min(4, allYears.length))
+			.attr("aria-label", "Focus chart on selected years")
+			.on("change", function() {
+				vis.focusedYears = Array.from(this.selectedOptions, option => Number(option.value))
+					.filter(Number.isFinite)
+					.sort((a, b) => a - b);
+				vis.wrangleData();
+			});
+
+		yearSelect.selectAll("option")
+			.data(allYears.map(year => ({
+				value: String(year),
+				label: String(year)
+			})))
+			.join("option")
+			.attr("value", d => d.value)
+			.property("selected", d => vis.focusedYears.includes(Number(d.value)))
+			.on("mousedown", function(event) {
+				event.preventDefault();
+				this.selected = !this.selected;
+				yearSelect.dispatch("change");
+			})
+			.text(d => d.label);
+
+		yearFocus.append("button")
+			.attr("type", "button")
+			.attr("class", "small-button event-reset-button")
+			.property("disabled", !vis.focusedYears.length)
+			.text("Reset")
+			.on("click", function(event) {
+				event.stopPropagation();
+
+				if (!vis.focusedYears.length) {
+					return;
+				}
+
+				vis.focusedYears = [];
+				vis.wrangleData();
+			});
+
 		const container = document.getElementById(vis.parentElement);
 		const width = container.clientWidth || 760;
-		const isCompact = width < 620;
+		const isCompact = width < 640;
+		const isLegendCompact = width < 760;
 		const margin = {
-			top: isCompact ? 118 : 104,
-			right: isCompact ? 16 : 28,
-			bottom: 42,
-			left: isCompact ? 48 : 76
+			top: isLegendCompact ? 134 : 116,
+			right: isCompact ? 30 : 44,
+			bottom: 54,
+			left: isCompact ? 54 : 72
 		};
-		const rowHeight = isCompact ? 34 : 32;
-		const height = Math.max(620, margin.top + margin.bottom + vis.displayData.length * rowHeight);
+		const selectedYearSet = new Set(vis.focusedYears);
+		const isFocused = selectedYearSet.size > 0;
+		const chartData = isFocused
+			? vis.displayData.filter(d => selectedYearSet.has(d.year))
+			: vis.displayData;
+
+		if (!chartData.length) {
+			vis.focusedYears = [];
+			vis.updateSummary();
+			vis.updateVis();
+			return;
+		}
+
+		const focusedRows = isFocused ? chartData : [];
+		const years = chartData.map(d => d.year);
+		const firstYear = years[0];
+		const lastYear = years.at(-1);
+		const yearSpan = Math.max(1, lastYear - firstYear);
+		const spreadFocusedYears = isFocused && years.length > 1;
+		const svgWidth = width;
+		const height = Math.max(isCompact ? 370 : 410, Math.min(500, Math.round(width * 0.34)));
+		const innerWidth = svgWidth - margin.left - margin.right;
 		const innerHeight = height - margin.top - margin.bottom;
-		const timelineX = isCompact ? 48 : 78;
-		const branchEndX = Math.max(timelineX + 142, width * (isCompact ? 0.5 : 0.43));
-		const labelX = isCompact ? branchEndX + 52 : branchEndX + 68;
-		const metricStartX = isCompact ? Math.min(width - 104, labelX + 96) : Math.min(width - 156, labelX + 170);
-		const maxDamage = d3.max(vis.displayData, d => d.totalDamage) || 1;
-		const maxDeaths = d3.max(vis.displayData, d => d.totalDeaths) || 1;
-		const maxAffected = d3.max(vis.displayData, d => d.peopleAffected) || 1;
-		const maxEvents = d3.max(vis.displayData, d => d.disasterEvents) || 1;
-		const yearScale = d3.scalePoint()
-			.domain(vis.displayData.map(d => d.year))
-			.range([0, innerHeight])
-			.padding(0.45);
-		const branchScale = d3.scaleSqrt()
-			.domain([0, maxEvents])
-			.range([66, isCompact ? 118 : 164]);
-		const impactRadius = d3.scaleSqrt()
-			.domain([0, 1])
-			.range([11, isCompact ? 27 : 34]);
+		const circleGap = isCompact ? 2 : 4;
+		const maxRadiusForYearSpan = spreadFocusedYears
+			? Infinity
+			: (innerWidth - 16 - circleGap * yearSpan) / (2 * (yearSpan + 1));
+		const maxRadiusForYearCount = (innerWidth - 16 - circleGap * Math.max(0, years.length - 1)) / (2 * (years.length + 1));
+		const maxRadiusForWidth = Math.min(maxRadiusForYearSpan, maxRadiusForYearCount);
+		const maxCircleRadius = isFocused
+			? (isCompact ? 62 : 92)
+			: (isCompact ? 14 : 22);
+		const largestCircleRadius = Math.max(
+			0.8,
+			Math.min(
+				maxCircleRadius,
+				maxRadiusForWidth
+			)
+		);
+		const innerDotRadius = Math.max(0.25, Math.min(isCompact ? 4 : 5, largestCircleRadius * 0.24));
+		const ringStrokeWidth = Math.max(0.3, Math.min(isCompact ? 1.9 : 2.3, largestCircleRadius * 0.13));
+		const usableRingRadius = Math.max(0.05, largestCircleRadius - innerDotRadius - ringStrokeWidth / 2);
+		const ringBand = usableRingRadius / 3;
+		const metricMaxima = vis.getMetricMaxima();
 		const metricRadius = d3.scaleSqrt()
 			.domain([0, 1])
-			.range([3.5, isCompact ? 8.5 : 10]);
+			.range([0, ringBand * 0.72]);
+		const ringBase = {
+			deaths: innerDotRadius + ringBand * 0.42,
+			affected: innerDotRadius + ringBand * 1.36,
+			damage: innerDotRadius + ringBand * 2.3
+		};
+		const maxOuterRadius = ringBase.damage + metricRadius(1) + ringStrokeWidth / 2;
+		const fullEventMax = vis.getEventDomainMax();
+		const eventDomainMax = fullEventMax * 1.08;
+		const xRange = [maxOuterRadius + 8, innerWidth - maxOuterRadius - 8];
+		const x = spreadFocusedYears
+			? d3.scalePoint()
+				.domain(years)
+				.range(xRange)
+				.padding(0.65)
+			: d3.scaleLinear()
+				.domain([firstYear - 0.5, lastYear + 0.5])
+				.range(xRange);
+		const y = d3.scaleLinear()
+			.domain([0, eventDomainMax])
+			.nice()
+			.range([innerHeight - maxOuterRadius - 8, maxOuterRadius + 8]);
+		const minEventDotRadius = Math.max(1.4, innerDotRadius * 0.55);
+		const maxEventDotRadius = Math.max(
+			minEventDotRadius + 0.8,
+			Math.min(ringBase.deaths - ringStrokeWidth * 1.6, innerDotRadius * (isFocused ? 2.35 : 1.85))
+		);
+		const eventDotRadius = d3.scaleSqrt()
+			.domain([0, fullEventMax])
+			.range([minEventDotRadius, maxEventDotRadius]);
+		const maxIconSizeInsideSmallestCircle = Math.max(3.2, ringBase.deaths * 1.18);
+		const eventIconSize = d => Math.min(
+			maxIconSizeInsideSmallestCircle,
+			Math.max(3.2, eventDotRadius(d.disasterEvents) * 2.2)
+		);
 		const formatComma = d3.format(",");
 		const formatMoney = value => {
 			if (!value) {
@@ -1242,92 +1668,202 @@ class ExtremeEventTimelineVis {
 
 			return formatComma(value);
 		};
-		const getImpactScore = d => {
-			const damageScore = Math.sqrt((d.totalDamage || 0) / maxDamage);
-			const deathScore = Math.sqrt((d.totalDeaths || 0) / maxDeaths);
-			const affectedScore = Math.sqrt((d.peopleAffected || 0) / maxAffected);
-			return (damageScore + deathScore + affectedScore) / 3;
-		};
 		const colorForType = type => disasterTypeColors[type] || "#64717f";
+		const metricLayerColors = {
+			deaths: "#7b2ff7",
+			affected: "#00a6d6",
+			damage: "#e0007a"
+		};
+		const metricLayers = [
+			{
+				key: "deaths",
+				label: "Total deaths",
+				legendLabel: "Deaths",
+				value: d => d.totalDeaths,
+				max: metricMaxima.deaths,
+				format: value => formatComma(Math.round(value || 0)),
+				baseRadius: ringBase.deaths,
+				stroke: metricLayerColors.deaths,
+				strokeWidth: ringStrokeWidth,
+				valueLabel: d => `${formatComma(d.totalDeaths)} deaths`
+			},
+			{
+				key: "affected",
+				label: "People affected",
+				legendLabel: "Affected",
+				value: d => d.peopleAffected,
+				max: metricMaxima.affected,
+				format: formatPeople,
+				baseRadius: ringBase.affected,
+				stroke: metricLayerColors.affected,
+				strokeWidth: ringStrokeWidth,
+				valueLabel: d => `${formatPeople(d.peopleAffected)} people affected`
+			},
+			{
+				key: "damage",
+				label: "Total damages",
+				legendLabel: "Damages",
+				value: d => d.totalDamage,
+				max: metricMaxima.damage,
+				format: formatMoney,
+				baseRadius: ringBase.damage,
+				stroke: metricLayerColors.damage,
+				strokeWidth: ringStrokeWidth,
+				valueLabel: d => `${formatMoney(d.totalDamage)} adjusted damages`
+			}
+		];
+		const allLayers = [
+			{
+				key: "events",
+				legendLabel: "Event dots"
+			},
+			...metricLayers
+		];
+		const validLayerKeys = new Set(allLayers.map(layer => layer.key));
+		vis.hiddenLayers = new Set(
+			Array.from(vis.hiddenLayers).filter(key => validLayerKeys.has(key))
+		);
+		const selectedFilterLabel = vis.selectedDisasterType === vis.defaultDisasterType
+			? "Most frequent each year"
+			: vis.selectedDisasterType;
+		const disasterTypeTitleLabels = {
+			Drought: "Droughts per year",
+			"Extreme temperature": "Extreme temperature events per year",
+			Flood: "Floods per year",
+			"Mass movement (wet)": "Wet mass movement events per year",
+			Storm: "Storms per year",
+			Wildfire: "Wildfires per year"
+		};
+		const graphStateTitle = vis.selectedDisasterType === vis.defaultDisasterType
+			? "Most frequent disasters per year"
+			: disasterTypeTitleLabels[vis.selectedDisasterType] ||
+				`${vis.selectedDisasterType} disasters per year`;
+		const metricScore = (d, layer) => Math.max(0, Math.min(1, (layer.value(d) || 0) / layer.max));
+		const ringRadius = (d, layer) => layer.baseRadius + metricRadius(metricScore(d, layer));
+		const isLayerVisible = key => !vis.hiddenLayers.has(key);
+		const visibleMetricKeys = metricLayers
+			.map(layer => layer.key)
+			.filter(isLayerVisible);
+		const onlyVisibleMetricKey = visibleMetricKeys.length === 1
+			? visibleMetricKeys[0]
+			: null;
 
-		const svg = d3.select("#" + vis.parentElement)
+		function toggleLayer(event, key) {
+			event.stopPropagation();
+			if (vis.hiddenLayers.has(key)) {
+				vis.hiddenLayers.delete(key);
+			} else {
+				vis.hiddenLayers.add(key);
+			}
+			vis.wrangleData();
+		}
+
+		const svg = root
 			.append("svg")
-			.attr("viewBox", `0 0 ${width} ${height}`)
-			.attr("aria-hidden", "true");
+			.attr("viewBox", `0 0 ${svgWidth} ${height}`)
+			.attr("role", "group")
+			.attr("aria-label", "Interactive yearly event count chart with legend toggles for event dots and impact rings")
+			.style("width", "100%");
+		appendDisasterIconSymbols(svg);
 
 		const chart = svg.append("g")
-			.attr("transform", `translate(0,${margin.top})`);
+			.attr("transform", `translate(${margin.left},${margin.top})`);
 
-		const yearExtent = d3.extent(vis.displayData, d => d.year);
-		const typeCounts = d3.rollups(
-			vis.displayData,
-			values => values.length,
-			d => d.disasterType
-		).sort((a, b) => d3.descending(a[1], b[1]));
+		const ringLegend = svg.append("g")
+			.attr("class", "event-ring-legend")
+			.attr("transform", `translate(${margin.left},28)`);
 
-		const legend = svg.append("g")
-			.attr("class", "event-type-legend")
-			.attr("transform", `translate(${margin.left},24)`);
-
-		legend.append("text")
+		ringLegend.append("text")
+			.attr("class", "event-state-title")
 			.attr("x", 0)
 			.attr("y", 0)
-			.attr("fill", "#17212b")
-			.attr("font-size", 13)
-			.attr("font-weight", 800)
-			.text("Top disaster type by event count");
+			.text(graphStateTitle);
 
-		let legendX = 0;
-		let legendY = 24;
+		const ringSample = ringLegend.append("g")
+			.attr("transform", "translate(24,50)");
 
-		typeCounts.forEach(([type]) => {
-			const itemWidth = type.length * 7 + 36;
-
-			if (legendX + itemWidth > width - margin.left - margin.right) {
-				legendX = 0;
-				legendY += 22;
-			}
-
-			const item = legend.append("g")
-				.attr("transform", `translate(${legendX},${legendY})`);
-
-			item.append("circle")
-				.attr("cx", 6)
-				.attr("cy", 0)
-				.attr("r", 6)
-				.attr("fill", colorForType(type));
-
-			item.append("text")
-				.attr("x", 18)
-				.attr("y", 4)
-				.attr("fill", "#344350")
-				.attr("font-size", 11)
-				.attr("font-weight", 800)
-				.text(type);
-
-			legendX += itemWidth;
-		});
-
-		const sizeLegend = svg.append("g")
-			.attr("class", "event-size-legend")
-			.attr("transform", `translate(${margin.left},${legendY + 48})`);
+		ringSample.append("use")
+			.attr("class", "event-icon")
+			.attr("href", `#${iconIdForDisasterType(chartData[0].disasterType)}`)
+			.attr("xlink:href", `#${iconIdForDisasterType(chartData[0].disasterType)}`)
+			.attr("x", -9)
+			.attr("y", -9)
+			.attr("width", 18)
+			.attr("height", 18)
+			.attr("opacity", isLayerVisible("events") ? 1 : 0.22);
 
 		[
-			{ label: "bubble = combined impact", radius: 11 },
-			{ label: "mini circles = damage, deaths, affected", radius: 5 }
-		].forEach((item, index) => {
-			const group = sizeLegend.append("g")
-				.attr("transform", `translate(${index * (isCompact ? 0 : 210)},${isCompact ? index * 20 : 0})`);
-
-			group.append("circle")
-				.attr("cx", item.radius)
-				.attr("cy", 0)
+			{ key: "deaths", radius: 15, color: metricLayerColors.deaths },
+			{ key: "affected", radius: 25, color: metricLayerColors.affected },
+			{ key: "damage", radius: 35, color: metricLayerColors.damage }
+		].forEach(item => {
+			ringSample.append("circle")
 				.attr("r", item.radius)
-				.attr("fill", "#17212b")
-				.attr("fill-opacity", index === 0 ? 0.78 : 0.35);
+				.attr("fill", onlyVisibleMetricKey === item.key ? item.color : "none")
+				.attr("fill-opacity", onlyVisibleMetricKey === item.key ? 0.16 : 0)
+				.attr("stroke", item.color)
+				.attr("stroke-width", ringStrokeWidth)
+				.attr("opacity", isLayerVisible(item.key) ? 1 : 0.22);
+		});
+
+		const ringLegendText = ringLegend.append("g")
+			.attr("transform", "translate(70,36)");
+
+		const legendItems = [
+			{
+				key: "events",
+				label: "Disaster type",
+				color: colorForType(chartData[0].disasterType),
+				iconType: chartData[0].disasterType,
+				fillOpacity: 0.95,
+				stroke: "#ffffff",
+				strokeWidth: 1.8
+			},
+			{ key: "deaths", label: "Deaths", color: metricLayerColors.deaths, fillOpacity: 0.14 },
+			{ key: "affected", label: "Affected", color: metricLayerColors.affected, fillOpacity: 0.14 },
+			{ key: "damage", label: "Damages", color: metricLayerColors.damage, fillOpacity: 0.14 }
+		];
+		const legendItemSpacing = 108;
+
+		legendItems.forEach((item, index) => {
+			const isHidden = !isLayerVisible(item.key);
+			const group = ringLegendText.append("g")
+				.attr("class", `event-legend-toggle${isHidden ? " inactive" : ""}`)
+				.attr("transform", `translate(${isLegendCompact ? 0 : index * legendItemSpacing},${isLegendCompact ? index * 16 : 0})`)
+				.attr("role", "button")
+				.attr("tabindex", 0)
+				.attr("aria-pressed", !isHidden)
+				.attr("aria-label", `${isHidden ? "Show" : "Hide"} ${item.label}`)
+				.on("click", event => toggleLayer(event, item.key))
+				.on("keydown", event => {
+					if (event.key === "Enter" || event.key === " ") {
+						event.preventDefault();
+						toggleLayer(event, item.key);
+					}
+				});
+
+			if (item.key === "events") {
+				group.append("use")
+					.attr("class", "event-icon")
+					.attr("href", `#${iconIdForDisasterType(item.iconType)}`)
+					.attr("xlink:href", `#${iconIdForDisasterType(item.iconType)}`)
+					.attr("x", -1)
+					.attr("y", -9)
+					.attr("width", 18)
+					.attr("height", 18);
+			} else {
+				group.append("circle")
+					.attr("cx", 7)
+					.attr("cy", 0)
+					.attr("r", 6)
+					.attr("fill", item.color)
+					.attr("fill-opacity", item.fillOpacity)
+					.attr("stroke", item.stroke || item.color)
+					.attr("stroke-width", item.strokeWidth || 2);
+			}
 
 			group.append("text")
-				.attr("x", item.radius * 2 + 8)
+				.attr("x", 22)
 				.attr("y", 4)
 				.attr("fill", "#64717f")
 				.attr("font-size", 11)
@@ -1335,177 +1871,162 @@ class ExtremeEventTimelineVis {
 				.text(item.label);
 		});
 
-		chart.append("line")
-			.attr("class", "event-timeline-axis")
-			.attr("x1", timelineX)
-			.attr("x2", timelineX)
-			.attr("y1", 0)
-			.attr("y2", innerHeight)
-			.attr("stroke", "#b8c2c3")
-			.attr("stroke-width", 3)
-			.attr("stroke-linecap", "round");
+		// ringLegend.append("text")
+		// 	.attr("class", "event-scale-note")
+		// 	.attr("x", 70)
+		// 	.attr("y", isLegendCompact ? 104 : 76)
+		// 	.text("Click on an element to remove that metric from the graph. Click on it again to return it. The size of circles is proportional to its affect");
 
-		const rows = chart.selectAll("g.event-timeline-row")
-			.data(vis.displayData, d => d.year)
-			.join("g")
-			.attr("class", "event-timeline-row")
-			.attr("transform", d => `translate(0,${yearScale(d.year)})`);
+		svg.append("text")
+			.attr("class", "event-selection-note")
+			.attr("x", margin.left)
+			.attr("y", margin.top - 16);
 
-		rows.append("text")
-			.attr("class", "event-year-label")
-			.attr("x", timelineX - 14)
-			.attr("y", 4)
-			.attr("text-anchor", "end")
-			.text(d => d.year);
+		const grid = chart.append("g")
+			.attr("class", "grid event-grid")
+			.call(d3.axisLeft(y)
+				.ticks(isCompact ? 4 : 5)
+				.tickSize(-innerWidth)
+				.tickFormat(""));
 
-		rows.append("circle")
-			.attr("class", "event-year-dot")
-			.attr("cx", timelineX)
-			.attr("cy", 0)
-			.attr("r", 4.5)
-			.attr("fill", "#ffffff")
-			.attr("stroke", "#17212b")
-			.attr("stroke-width", 2);
+		grid.select(".domain").remove();
 
-		rows.append("line")
-			.attr("class", "event-branch")
-			.attr("x1", timelineX + 5)
-			.attr("x2", d => timelineX + branchScale(d.disasterEvents))
-			.attr("y1", 0)
-			.attr("y2", 0)
-			.attr("stroke", d => colorForType(d.disasterType))
-			.attr("stroke-width", 2.5)
-			.attr("stroke-opacity", 0.58)
-			.attr("stroke-linecap", "round");
+		chart.append("g")
+			.attr("class", "axis")
+			.attr("transform", `translate(0,${innerHeight})`)
+			.call(d3.axisBottom(x)
+				.tickValues(years.filter((year, index) => {
+					const step = spreadFocusedYears && years.length <= 8
+						? 1
+						: isCompact ? 4 : width < 980 ? 2 : 1;
+					return index === 0 || index === years.length - 1 || index % step === 0;
+				}))
+				.tickFormat(d3.format("d")));
 
-		const nodes = rows.append("g")
-			.attr("class", "event-impact-node")
-			.attr("transform", d => `translate(${timelineX + branchScale(d.disasterEvents)},0)`);
-
-		nodes.append("circle")
-			.attr("class", "event-impact-halo")
-			.attr("r", d => impactRadius(getImpactScore(d)) + 6)
-			.attr("fill", d => colorForType(d.disasterType))
-			.attr("fill-opacity", 0.12);
-
-		nodes.append("circle")
-			.attr("class", "event-impact-bubble")
-			.attr("r", d => impactRadius(getImpactScore(d)))
-			.attr("fill", d => colorForType(d.disasterType))
-			.attr("fill-opacity", 0.9)
-			.attr("stroke", "#ffffff")
-			.attr("stroke-width", 2);
-
-		nodes.append("text")
-			.attr("class", "event-count-label")
-			.attr("text-anchor", "middle")
-			.attr("dy", "0.35em")
-			.text(d => d.disasterEvents);
-
-		rows.append("text")
-			.attr("class", "event-type-label")
-			.attr("x", d => Math.max(labelX, timelineX + branchScale(d.disasterEvents) + impactRadius(getImpactScore(d)) + 12))
-			.attr("y", -3)
-			.text(d => d.disasterType);
-
-		rows.append("text")
-			.attr("class", "event-impact-label")
-			.attr("x", d => Math.max(labelX, timelineX + branchScale(d.disasterEvents) + impactRadius(getImpactScore(d)) + 12))
-			.attr("y", 12)
-			.text(d => `${d.disasterEvents} events`);
-
-		const metricGroups = rows.append("g")
-			.attr("class", "event-metric-glyph")
-			.attr("transform", `translate(${metricStartX},0)`);
-
-		const metricData = d => [
-			{
-				key: "Damage",
-				value: d.totalDamage,
-				radius: metricRadius((d.totalDamage || 0) / maxDamage),
-				label: formatMoney(d.totalDamage)
-			},
-			{
-				key: "Deaths",
-				value: d.totalDeaths,
-				radius: metricRadius((d.totalDeaths || 0) / maxDeaths),
-				label: formatComma(d.totalDeaths)
-			},
-			{
-				key: "Affected",
-				value: d.peopleAffected,
-				radius: metricRadius((d.peopleAffected || 0) / maxAffected),
-				label: formatPeople(d.peopleAffected)
-			}
-		];
-
-		const metric = metricGroups.selectAll("g.metric")
-			.data(metricData)
-			.join("g")
-			.attr("class", "metric")
-			.attr("transform", (d, index) => `translate(${index * (isCompact ? 30 : 42)},0)`);
-
-		metric.append("circle")
-			.attr("r", d => d.radius)
-			.attr("fill", function(d) {
-				return colorForType(d3.select(this.parentNode.parentNode).datum().disasterType);
-			})
-			.attr("fill-opacity", (d, index) => [0.28, 0.58, 0.4][index])
-			.attr("stroke", function(d) {
-				return colorForType(d3.select(this.parentNode.parentNode).datum().disasterType);
-			})
-			.attr("stroke-width", 1.4);
-
-		metric.append("title")
-			.text(d => `${d.key}: ${d.label}`);
-
-		if (!isCompact) {
-			metric.append("text")
-				.attr("x", 0)
-				.attr("y", 18)
-				.attr("text-anchor", "middle")
-				.attr("fill", "#64717f")
-				.attr("font-size", 8)
-				.attr("font-weight", 800)
-				.text(d => d.key[0]);
-		}
-
-		rows.append("title")
-			.text(d => `${d.year}: ${d.disasterType}\nEvents: ${formatComma(d.disasterEvents)}\nDamage: ${formatMoney(d.totalDamage)} adjusted\nDeaths: ${formatComma(d.totalDeaths)}\nPeople affected: ${formatPeople(d.peopleAffected)}\nRows combined: ${d.rows}`);
+		chart.append("g")
+			.attr("class", "axis")
+			.call(d3.axisLeft(y)
+				.ticks(isCompact ? 4 : 5)
+				.tickFormat(d3.format("d")));
 
 		chart.append("text")
-			.attr("x", timelineX)
-			.attr("y", -18)
-			.attr("fill", "#17212b")
-			.attr("font-size", 13)
-			.attr("font-weight", 800)
+			.attr("class", "event-axis-label")
+			.attr("x", innerWidth / 2)
+			.attr("y", innerHeight + 42)
 			.attr("text-anchor", "middle")
-			.text(`${yearExtent[0]}-${yearExtent[1]}`);
+			.text("Year");
 
-		if (!isCompact) {
-			chart.append("text")
-				.attr("x", metricStartX)
-				.attr("y", -18)
-				.attr("fill", "#64717f")
-				.attr("font-size", 10)
-				.attr("font-weight", 800)
-				.text("Dmg");
+		chart.append("text")
+			.attr("class", "event-axis-label")
+			.attr("x", -innerHeight / 2)
+			.attr("y", -48)
+			.attr("transform", "rotate(-90)")
+			.attr("text-anchor", "middle")
+			.text("Number of Events");
 
-			chart.append("text")
-				.attr("x", metricStartX + 42)
-				.attr("y", -18)
-				.attr("fill", "#64717f")
-				.attr("font-size", 10)
-				.attr("font-weight", 800)
-				.text("Deaths");
+		const nodes = chart.selectAll("g.event-circle-node")
+			.data(chartData, d => d.year)
+			.join("g")
+			.attr("class", d => `event-circle-node${selectedYearSet.has(d.year) ? " focused" : ""}`)
+			.attr("transform", d => `translate(${x(d.year)},${y(d.disasterEvents)})`);
 
+		metricLayers.slice().reverse().forEach(layer => {
+			const visibleCircle = nodes.append("circle")
+				.attr("class", `event-circle event-circle-${layer.key}`)
+				.attr("display", d => isLayerVisible(layer.key) && layer.value(d) > 0 ? null : "none")
+				.attr("r", d => ringRadius(d, layer))
+				.attr("fill", layer.stroke)
+				.attr("fill-opacity", onlyVisibleMetricKey === layer.key ? 0.22 : 0.001)
+				.attr("stroke", layer.stroke)
+				.attr("stroke-width", layer.strokeWidth)
+				.attr("stroke-opacity", 0.88);
+
+			visibleCircle.append("title")
+				.text(d => `${d.year}: ${layer.label}\n${layer.valueLabel(d)}\nMetric scope: ${d.metricScope}\nShown event count: ${formatComma(d.disasterEvents)} ${d.disasterType} events\nDeaths: ${formatComma(d.totalDeaths)}\nPeople affected: ${formatPeople(d.peopleAffected)}\nDamage: ${formatMoney(d.totalDamage)}`);
+		});
+
+		const eventIcons = nodes.append("use")
+			.attr("class", "event-icon event-circle-events")
+			.attr("display", isLayerVisible("events") ? null : "none")
+			.attr("href", d => `#${iconIdForDisasterType(d.disasterType)}`)
+			.attr("xlink:href", d => `#${iconIdForDisasterType(d.disasterType)}`)
+			.attr("x", d => -eventIconSize(d) / 2)
+			.attr("y", d => -eventIconSize(d) / 2)
+			.attr("width", d => eventIconSize(d))
+			.attr("height", d => eventIconSize(d));
+
+		eventIcons.append("title")
+			.text(d => `${d.year}: ${formatComma(d.disasterEvents)} ${d.disasterType} events\nMode: ${selectedFilterLabel}\nMetric scope: ${d.metricScope}\nDeaths: ${formatComma(d.totalDeaths)}\nPeople affected: ${formatPeople(d.peopleAffected)}\nDamage: ${formatMoney(d.totalDamage)}`);
+
+		if (focusedRows.length && focusedRows.length <= 4) {
+			focusedRows.forEach((focusedRow, rowIndex) => {
+				const nodeX = x(focusedRow.year);
+				const nodeY = y(focusedRow.disasterEvents);
+				const useStackedFocusLabels = focusedRows.length > 1;
+				const labelOnRight = nodeX < innerWidth * 0.58;
+				const labelAbove = rowIndex % 2 === 0;
+				const labelX = useStackedFocusLabels
+					? Math.max(68, Math.min(innerWidth - 68, nodeX))
+					: labelOnRight
+						? Math.min(innerWidth - 8, nodeX + maxOuterRadius + 24)
+						: Math.max(8, nodeX - maxOuterRadius - 24);
+				const labelY = useStackedFocusLabels
+					? labelAbove ? 18 : Math.max(18, innerHeight - 78)
+					: Math.max(
+						18,
+						Math.min(innerHeight - 72, nodeY - 44)
+					);
+				const textAnchor = useStackedFocusLabels
+					? "middle"
+					: labelOnRight ? "start" : "end";
+				const leaderStartX = useStackedFocusLabels
+					? nodeX
+					: nodeX + (labelOnRight ? maxOuterRadius : -maxOuterRadius);
+				const leaderStartY = useStackedFocusLabels
+					? nodeY + (labelAbove ? -maxOuterRadius : maxOuterRadius)
+					: nodeY;
+				const leaderEndX = useStackedFocusLabels
+					? labelX
+					: labelX + (labelOnRight ? -8 : 8);
+				const leaderEndY = useStackedFocusLabels
+					? labelY + (labelAbove ? 8 : -8)
+					: labelY + 8;
+
+				chart.append("line")
+					.attr("class", "event-focus-leader")
+					.attr("x1", leaderStartX)
+					.attr("y1", leaderStartY)
+					.attr("x2", leaderEndX)
+					.attr("y2", leaderEndY);
+
+				const focusText = chart.append("text")
+					.attr("class", "event-focus-detail")
+					.attr("x", labelX)
+					.attr("y", labelY)
+					.attr("text-anchor", textAnchor);
+
+				[
+					`${focusedRow.year}: ${focusedRow.disasterType}`,
+					`${formatComma(focusedRow.disasterEvents)} events`,
+					`${formatComma(focusedRow.totalDeaths)} deaths`,
+					`${formatPeople(focusedRow.peopleAffected)} affected`,
+					`${formatMoney(focusedRow.totalDamage)} damages`
+				].forEach((line, index) => {
+					focusText.append("tspan")
+						.attr("x", labelX)
+						.attr("dy", index === 0 ? 0 : 15)
+						.attr("fill", index === 0 ? "#17212b" : "#344350")
+						.attr("font-weight", index === 0 ? 800 : 700)
+						.text(line);
+				});
+			});
+		} else if (focusedRows.length > 4) {
 			chart.append("text")
-				.attr("x", metricStartX + 84)
-				.attr("y", -18)
-				.attr("fill", "#64717f")
-				.attr("font-size", 10)
-				.attr("font-weight", 800)
-				.text("Affected");
+				.attr("class", "event-focus-detail")
+				.attr("x", innerWidth - 8)
+				.attr("y", 18)
+				.attr("text-anchor", "end")
+				.text(`${focusedRows.length} selected years`);
 		}
 	}
 }
