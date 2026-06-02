@@ -31,21 +31,49 @@
 			<div class="hero-content">
 				<p class="eyebrow">Climate and Weather Events Data Story</p>
 				<h1>Man Made Natural Disasters</h1>
-				<p class="lede">A data-driven look at how rising temperatures, emissions, and extreme weather events connect</p>
+				<p class="lede">A data-driven look at how rising temperatures, emissions, and extreme weather events connect in the United States</p>
 
 			</div>
-			<a class="scroll-cue" href="#temperature">Start the story</a>
+			<a class="scroll-cue" href="#story-highlights">Start the story</a>
 		</header>
 
 		<main>
+			<section id="story-highlights" class="story-hook" aria-label="Story highlights">
+				<div class="highlight-strip">
+					<article>
+						<h3>1.7 million people affected by Hurricane Katrina (2005)</h3>
+					</article>
+					<article>
+						<h3>Over $200 billion of damage during 2017 Atlantic hurricane season</h3>
+					</article>
+					<article>
+						<h3>
+							The US has seen six category 4 hurricanes make landfall since 2004
+							<span class="highlight-subline">Before 2000, this was a once a decade occurrence.</span>
+						</h3>
+					</article>
+				</div>
+				<p class="story-hook-bridge">But first, let's take a moment to look at climate change.</p>
+			</section>
 			<!-- TEMPERATURE SECTION -->
 			<section id="temperature" class="story-section split-section">
 				<div class="sticky-copy">
 					<p class="eyebrow">Temperature Change</p>
-					<h2>Temperature & precipitation in the USA</h2>
+					<h2>Temperature & precipitation in the U.S.</h2>
 					<p>
-						Over the past 23 years, the change in average temperature from year to year has increased
-						drastically. The growing extremes
+						The average temperature from year to year fluctuates naturally. The concerning trend is the
+						growing change in temperature from year to year. Recent years have sharp slopes, indicating drastic fluctuations
+						in average temperatures. Precipitation, an important marker of environmental health, has also varied
+						inconsistently in recent years.
+					</p>
+					<p>
+						These growing fluctuation indicate a potential long-term effect
+						of climate change and beg the question: what else in the environment might climate change affect?
+					</p>
+					<p>
+						For more detailed information about climate changes in each state, see this resource from the
+						North Carolina Institute for Climate Studies:
+						<a href="https://statesummaries.ncics.org/">State Climate Summaries</a>
 					</p>
 				</div>
 				<div class="viz-panel">
@@ -53,7 +81,7 @@
 						<div>
 							<h3>Temperature and Precipitation Climograph</h3>
 							<p>Adjust the selection of the timeline at the bottom to focus on particular ranges <br>
-								Mouse over the data points to see particular values</p>
+								Mouse over the data points to see specific values</p>
 						</div>
 						<span id="climograph-year-tag" class="tag">Loading data</span>
 					</div>
@@ -101,28 +129,33 @@
 
 			<!-- QUOTE SECTION -->
 			<section class="quote-section">
-				<p>"We are the first generation to feel the effect of climate change and the last generation who can do something about it." — Barack Obama</p>
+				<p>"We are the first generation to feel the effect of climate change and the last generation who can do something about it." <br>— Barack Obama</p>
 			</section>
 			<!-- EXTREME WEATHER EVENTS SECTION -->
 			<section id="events" class="story-section split-section reverse">
 				<div class="sticky-copy">
 					<p class="eyebrow">Extreme weather events</p>
-					<h2>Increase of extreme weather events.</h2>
+					<h2>Extreme weather events have been getting worse.</h2>
 					<p>
-						Each year highlights the weather-related disaster type with the most reported events.
-						Branch size reflects the combined scale of damages, deaths, and people affected.
+						The data shows that the most frequent and most destructive type of disaster in the US is storms, followed by floods and wildfires.
+						Storms, floods, wildfires, extreme temperatures, drought, and mass movement (e.g. mudslides) are all directly affected by climate change.
+						Increased temperatures changes and inconsistent precipitation makes storms more intense, leaves environments more prone to flooding and landslides,
+						increases the risk of drought and extreme temperatures waves, and worsens the conditions for severe wildfires. This combination of conditions for more
+						events forming and increased intensity of events leads to a dangerous outcome: natural disasters are getting more devastating. And if this is happening
+						in the United States, it is reasonable to interpolate that natural disasters are having a more devastating effect in other parts of the world as well.
 					</p>
 				</div>
 				<!-- EXTREME WEATHER EVENTS VISUAL -->
 				<div class="viz-panel">
 					<div class="viz-header">
 						<div>
-							<h3>Largest Event Count by Year</h3>
-							<p>Timeline branches show the top disaster type and its reported impacts</p>
+							<h3>Disaster Frequency and Severity</h3>
+							<p>Filter by year, type of disaster, and metric of damage.
+							</p>
 						</div>
 						<span id="event-timeline-year-tag" class="tag">Loading data</span>
 					</div>
-					<div id="event-chart" class="chart event-chart" role="img" aria-label="Timeline showing the disaster type with the most events in each year"></div>
+					<div id="event-chart" class="chart event-chart" role="img" aria-label="Scatter plot showing the most frequent disaster type by year, event count, and annual impact rings"></div>
 				</div>
 			</section>
 
@@ -146,7 +179,7 @@
 				<!-- WHY IT MATTERS SECTION -->
 				<div class="section-copy">
 					<p class="eyebrow">Why this matters</p>
-					<h2>Why exactly should you care about this...</h2>
+					<h2>Why you should care:</h2>
 					<!-- ECONOMIC VISUAL -->
 					<div id="economic-impact-visual" class="economic-impact-visual" role="img"
 					     aria-label="Bar chart showing yearly adjusted damage from weather-related disasters in the United States">
@@ -155,13 +188,13 @@
 
 				<div class="narrative-block">
 					<p> Climate change affects many aspects of our lives, often in ways that are not immediately visible.
-						Not only is it an environmental issue, its impacts go beyond rising temperatures and weather patters.
+						Not only is it an environmental issue, but its impacts go beyond rising temperatures and weather patters.
 						Climate change brings economic consequences.
 						Weather-related disasters such as hurricanes, floods, droughts, and wildfires
 						cause billions of dollars of damage each year. </p>
 					<p> Beyond the economic impact, these extreme weather events deeply impact humans.
-						Millions of people are affected whether indirectly by evacuations and disruptions to their daily life
-						or directly through property loss, food insecurity. In some cases, these events result in numerous deaths.
+						Millions of people are affected, whether indirectly by evacuations and disruptions to their daily life,
+						or directly through property loss, food insecurity, or displacement. In some cases, these events result in numerous deaths.
 					</p>
 				</div>
 
@@ -174,7 +207,7 @@
 					<h2>Extreme weather events affect many</h2>
 					<p>
 						While the economic damage caused by these extreme weather events is significant, the human cost
-						can be great. The linked view helps show that human impact is not only financial, it is measured
+						can be equally devastating. The linked view shows that human impact is not only financial; it is measured
 						in lives disrupted and lives lost. These events leave lasting consequences that cannot be measured
 						by financial damage alone.
 					</p>
@@ -182,7 +215,7 @@
 					<p>
 						From the chart on the right, we can see some years experienced weather events that affected millions
 						of people. Typically, those impacted may be affected by having to evacuate, relocate, repair damages,
-						or recover from disruptions.
+						miss work/school, recover from disruptions, or deal with the loss of loved ones.
 					</p>
 				</div>
 				<!-- IMPACTS LINKED VIEW VISUAL -->
@@ -205,7 +238,7 @@
 					<p> There are many ways you can reduce your carbon footprint and make an impact</p>
 					<p> Below you can see some daily activities in your life that you can swap out with eco-friendly alternatives to help.
 						Even the smallest changes can make an impact if we all work together.</p>
-					<h4>Climate change doesn't just affect the temperature outside you feel, it goes beyond that...</h4>
+					<h4>Climate change doesn't just affect the temperature you feel outside. <br>Its impacts infiltrate deeper and will continue to worsen, <br><strong>unless we make changes and take action.</strong></h4>
 				</div>
 				<!-- ACTION VISUAL -->
 				<div class="action-grid">
@@ -275,7 +308,20 @@
 		</main>
 
 		<footer class="site-footer">
-			<p>Add citations, final datasets, and team information before publishing.</p>
+			<p>Team: Emission Impossible (Anna Everly, Jeraldi Martinez)</p>
+			<br>
+			<h3>Sources:</h3>
+			<ul>
+				<li><a href="https://www.kaggle.com/datasets/bhadramohit/climate-change-dataset?resource=download">Climate Change Data Set</a></li>
+				<li><a href="https://data.humdata.org/dataset/emdat-country-profiles-usa">Natural Disasters Data Set</a></li>
+			</ul>
+			<h3>References:</h3>
+			<ul>
+				<li><a href="https://science.nasa.gov/climate-change/extreme-weather/">NASA</a></li>
+				<li><a href="https://www.noaa.gov/education/resource-collections/climate/climate-change-impacts">NOAA</a></li>
+				<li><a href="https://www.worldwildlife.org/resources/explainers/is-climate-change-increasing-the-risk-of-disasters/">WWF</a></li>
+				<li><a href="https://www.pbs.org/wnet/peril-and-promise/2022/09/how-climate-change-impacts-each-type-of-natural-disaster/">PBS</a></li>
+			</ul>
 		</footer>
 
 		<script src="js/main.js"></script>

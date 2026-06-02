@@ -202,6 +202,67 @@ h4 {
 	padding: clamp(72px, 10vw, 140px) clamp(20px, 5vw, 76px);
 }
 
+.story-hook {
+	padding: clamp(24px, 4vw, 44px) clamp(20px, 5vw, 76px);
+	background: #102029;
+	color: #fff;
+}
+
+.highlight-strip {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 12px;
+	align-items: stretch;
+	max-width: 1060px;
+	margin: 0 auto;
+}
+
+.highlight-strip article {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr);
+	gap: 12px;
+	align-items: center;
+	padding: clamp(14px, 1.8vw, 18px);
+	background: rgba(255, 255, 255, 0.1);
+	border: 1px solid rgba(255, 255, 255, 0.18);
+	border-radius: 8px;
+}
+
+.highlight-strip article > span {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	border: 1px solid rgba(241, 195, 108, 0.55);
+	border-radius: 999px;
+	color: #f1c36c;
+	font-size: 12px;
+	font-weight: 900;
+}
+
+.highlight-strip h3 {
+	font-size: clamp(16px, 1.7vw, 21px);
+	line-height: 1.1;
+}
+
+.highlight-subline {
+	display: block;
+	margin-top: 6px;
+	color: rgba(255, 255, 255, 0.72);
+	font-size: 0.76em;
+	font-weight: 600;
+	line-height: 1.25;
+}
+
+.story-hook-bridge {
+	margin: 22px auto 0;
+	color: rgba(255, 255, 255, 0.82);
+	font-size: clamp(17px, 2vw, 22px);
+	font-weight: 800;
+	text-align: center;
+}
+
 .intro-grid {
 	display: grid;
 	grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
@@ -428,45 +489,184 @@ h4 {
 }
 
 .event-chart {
-	min-height: 620px;
+	min-height: 0;
+	overflow-x: hidden;
+	padding-bottom: 2px;
 }
 
-.event-chart .event-year-label,
-.event-chart .event-type-label,
-.event-chart .event-impact-label,
-.event-chart .event-count-label {
+#events.split-section.reverse {
+	display: flex;
+	flex-direction: column;
+	gap: 30px;
+}
+
+#events.split-section.reverse .sticky-copy {
+	position: static;
+	order: 0;
+	max-width: 980px;
+	margin: 0 auto;
+	text-align: center;
+}
+
+#events.split-section.reverse .sticky-copy p:not(.eyebrow) {
+	max-width: 780px;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+#events .viz-panel {
+	min-height: 0;
+	width: 100%;
+}
+
+.event-chart svg {
+	width: 100%;
+	max-width: 100%;
+}
+
+.event-filter-row {
+	align-items: flex-start;
+	margin-bottom: 8px;
+	min-width: 0;
+}
+
+.event-year-focus {
+	display: inline-flex;
+	align-items: flex-start;
+	gap: 8px;
+	margin-left: auto;
+}
+
+.event-year-focus label {
+	color: #344350;
+	font-size: 13px;
+	font-weight: 800;
+	white-space: nowrap;
+}
+
+.event-year-select {
+	min-width: 118px;
+	padding: 8px 12px;
+	border: 1px solid var(--line);
+	border-radius: 999px;
+	background: #f7faf9;
+	color: #344350;
+	font: 800 13px "Inter", Arial, sans-serif;
+}
+
+.event-year-select[multiple] {
+	min-width: 132px;
+	padding: 6px;
+	border-radius: 8px;
+}
+
+.event-year-select option {
+	padding: 2px 8px;
+}
+
+.event-reset-button:disabled {
+	cursor: default;
+	opacity: 0.45;
+}
+
+.event-reset-button:disabled:hover {
+	background: #f7faf9;
+	border-color: var(--line);
+	color: #344350;
+}
+
+.event-type-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+}
+
+.event-type-swatch {
+	width: 10px;
+	height: 10px;
+	border: 1px solid rgba(23, 33, 43, 0.2);
+	border-radius: 999px;
+}
+
+.event-chart .event-circle {
+	cursor: default;
+	outline: none;
+	transition: opacity 160ms ease, stroke-width 160ms ease;
+}
+
+.event-chart .event-icon {
+	cursor: default;
+	outline: none;
+	overflow: visible;
+}
+
+.event-chart .event-legend-toggle {
+	cursor: pointer;
+	outline: none;
+}
+
+.event-chart .event-legend-toggle.inactive {
+	opacity: 0.36;
+}
+
+.event-chart .event-legend-toggle:focus-visible text {
+	fill: #17212b;
+}
+
+.event-chart .event-circle-node:hover .event-circle {
+	stroke-opacity: 1;
+}
+
+.event-chart .event-circle-node:hover .event-circle-events {
+	filter: drop-shadow(0 2px 5px rgba(23, 33, 43, 0.22));
+}
+
+.event-chart .event-circle-node.focused .event-circle {
+	filter: drop-shadow(0 3px 8px rgba(23, 33, 43, 0.24));
+}
+
+.event-chart .event-axis-label,
+.event-chart .event-selection-note,
+.event-chart .event-state-title,
+.event-chart .event-mode-note,
+.event-chart .event-scale-note,
+.event-chart .event-selected-label text {
+	fill: #64717f;
+	font-size: 11px;
 	font-weight: 800;
 }
 
-.event-chart .event-year-label {
-	fill: #344350;
-	font-size: 10px;
-}
-
-.event-chart .event-type-label {
+.event-chart .event-state-title {
 	fill: #17212b;
-	font-size: 11px;
+	font-size: 16px;
+	font-weight: 900;
 }
 
-.event-chart .event-impact-label {
-	fill: #64717f;
-	font-size: 10px;
+.event-chart .event-selection-note {
+	fill: #344350;
 }
 
-.event-chart .event-count-label {
-	fill: #ffffff;
-	font-size: 10px;
-	pointer-events: none;
+.event-chart .event-selected-label text:first-child {
+	fill: #17212b;
+	font-size: 12px;
 }
 
-.event-chart .event-timeline-row:hover .event-branch {
-	stroke-opacity: 0.95;
+.event-chart .event-grid line {
+	stroke: rgba(23, 33, 43, 0.08);
+}
+
+.event-focus-leader {
+	stroke: rgba(23, 33, 43, 0.34);
+	stroke-dasharray: 4 4;
+	stroke-width: 1.4px;
+}
+
+.event-focus-detail {
+	font-size: 12px;
+	paint-order: stroke;
+	stroke: #fff;
+	stroke-linejoin: round;
 	stroke-width: 4px;
-}
-
-.event-chart .event-timeline-row:hover .event-impact-bubble {
-	stroke: #17212b;
-	stroke-width: 2.5px;
 }
 
 .human-impact-view {
@@ -682,7 +882,7 @@ h4 {
 }
 
 .quote-section {
-	padding: clamp(70px, 11vw, 150px) clamp(22px, 8vw, 140px);
+	padding: clamp(36px, 5vw, 78px) clamp(22px, 8vw, 140px);
 	background: #102029;
 	color: #fff;
 }
@@ -691,7 +891,7 @@ h4 {
 	max-width: 980px;
 	margin: 0 auto;
 	font-family: "Source Serif 4", Georgia, serif;
-	font-size: clamp(38px, 6vw, 102px);
+	font-size: clamp(38px, 3.75vw, 102px);
 	font-weight: 700;
 	line-height: 1.02;
 	text-align: center;
@@ -847,6 +1047,10 @@ h4 {
 		grid-template-columns: 1fr;
 	}
 
+	.highlight-strip {
+		grid-template-columns: 1fr;
+	}
+
 	.split-section.reverse .sticky-copy {
 		order: 0;
 	}
@@ -883,6 +1087,16 @@ h4 {
 
 	.viz-header {
 		flex-direction: column;
+	}
+
+	.event-year-focus {
+		width: 100%;
+		margin-left: 0;
+	}
+
+	.event-year-select {
+		flex: 1;
+		min-width: 0;
 	}
 
 	.action-grid article {
