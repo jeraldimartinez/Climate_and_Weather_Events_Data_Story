@@ -573,7 +573,7 @@ class ClimographVis {
 		if (chart) {
 			chart.setAttribute(
 				"aria-label",
-				`Climograph showing average U.S. temperature and precipitation from ${startYear} to ${endYear}. Timeline covers ${fullStart} to ${fullEnd}.`
+				`Climograph showing average U.S. temperature and precipitation from ${startYear} to ${endYear}. Click bars or data points to show values. Timeline covers ${fullStart} to ${fullEnd} and can be adjusted to zoom in.`
 			);
 		}
 	}
@@ -643,7 +643,6 @@ class ClimographVis {
 		const selectedSpan = Math.max(1, selectedEnd - selectedStart + 1);
 		const barWidth = Math.max(6, Math.min(30, innerWidth / selectedSpan * 0.58));
 		const formatComma = d3.format(",");
-		const formatPointLabel = d => `${getYear(d)}\nAverage temperature: ${formatNumber(getTemperature(d))} C\nAverage precipitation: ${formatComma(Math.round(getPrecipitation(d)))} mm`;
 
 		const svg = d3.select("#" + vis.parentElement)
 			.append("svg")
@@ -652,6 +651,42 @@ class ClimographVis {
 
 		const chart = svg.append("g")
 			.attr("transform", `translate(${margin.left},${margin.top})`);
+
+		const clickTooltipWidth = isCompact ? 174 : 190;
+		const clickTooltipHeight = 68;
+		const clickTooltip = chart.append("g")
+			.attr("class", "climograph-click-tooltip")
+			.attr("pointer-events", "none")
+			.style("display", "none");
+
+		clickTooltip.append("rect")
+			.attr("width", clickTooltipWidth)
+			.attr("height", clickTooltipHeight)
+			.attr("rx", 10)
+			.attr("fill", "#ffffff")
+			.attr("stroke", "#d9dfdf")
+			.style("filter", "drop-shadow(0 8px 18px rgba(23, 33, 43, 0.18))");
+
+		const tooltipYear = clickTooltip.append("text")
+			.attr("x", 12)
+			.attr("y", 21)
+			.attr("fill", "#17212b")
+			.attr("font-size", 13)
+			.attr("font-weight", 900);
+
+		const tooltipTemperature = clickTooltip.append("text")
+			.attr("x", 12)
+			.attr("y", 41)
+			.attr("fill", vis.tempColor)
+			.attr("font-size", 11)
+			.attr("font-weight", 800);
+
+		const tooltipPrecipitation = clickTooltip.append("text")
+			.attr("x", 12)
+			.attr("y", 57)
+			.attr("fill", vis.precipColor)
+			.attr("font-size", 11)
+			.attr("font-weight", 800);
 
 		const x = d3.scaleLinear()
 			.domain([selectedStart - 0.5, selectedEnd + 0.5])
@@ -672,6 +707,32 @@ class ClimographVis {
 			.x(d => x(getYear(d)))
 			.y(d => yTemperature(getTemperature(d)));
 
+		const hideClickTooltip = () => {
+			clickTooltip.style("display", "none");
+		};
+
+		const showClickTooltip = (event, d, anchorY) => {
+			event.stopPropagation();
+
+			const anchorX = x(getYear(d));
+			const preferredTooltipX = anchorX + clickTooltipWidth + 16 > innerWidth
+				? anchorX - clickTooltipWidth - 16
+				: anchorX + 16;
+			const maxTooltipX = Math.max(6, innerWidth - clickTooltipWidth - 6);
+			const tooltipX = Math.max(6, Math.min(maxTooltipX, preferredTooltipX));
+			const tooltipY = Math.max(6, Math.min(innerHeight - clickTooltipHeight - 6, anchorY - 34));
+
+			tooltipYear.text(`${getYear(d)}`);
+			tooltipTemperature.text(`Average temperature: ${formatNumber(getTemperature(d))} C`);
+			tooltipPrecipitation.text(`Average precipitation: ${formatComma(Math.round(getPrecipitation(d)))} mm`);
+			clickTooltip
+				.attr("transform", `translate(${tooltipX},${tooltipY})`)
+				.style("display", null)
+				.raise();
+		};
+
+		svg.on("click", hideClickTooltip);
+
 		chart.append("g")
 			.attr("class", "grid")
 			.call(d3.axisLeft(yPrecipitation).tickSize(-innerWidth).tickFormat(""))
@@ -688,8 +749,8 @@ class ClimographVis {
 			.attr("height", d => innerHeight - yPrecipitation(getPrecipitation(d)))
 			.attr("fill", vis.precipColor)
 			.attr("fill-opacity", 0.78)
-			.append("title")
-			.text(formatPointLabel);
+			.style("cursor", "pointer")
+			.on("click", (event, d) => showClickTooltip(event, d, yPrecipitation(getPrecipitation(d))));
 
 		chart.append("path")
 			.datum(vis.displayData)
@@ -710,8 +771,8 @@ class ClimographVis {
 			.attr("fill", vis.tempColor)
 			.attr("stroke", "#ffffff")
 			.attr("stroke-width", 1.8)
-			.append("title")
-			.text(formatPointLabel);
+			.style("cursor", "pointer")
+			.on("click", (event, d) => showClickTooltip(event, d, yTemperature(getTemperature(d))));
 
 		const xTickCount = isCompact ? 4 : 7;
 		let xTicks = allYears
@@ -979,9 +1040,17 @@ class Co2TrendVis {
 		setText("#co2-latest", `${formatNumber(latest.avgTemperature)}°C / ${formatNumber(latest.co2Emissions)} t`);
 
 		if (lineChart) {
+			const hasPolarVortexPoint = vis.data.some(d =>
+				Number(d.year) === 2014 &&
+				Number.isFinite(Number(d.avgTemperature))
+			);
+			const polarVortexDescription = hasPolarVortexPoint
+				? " A blue callout marks the 2014 polar vortex on the temperature line."
+				: "";
+
 			lineChart.setAttribute(
 				"aria-label",
-				`Two-line chart comparing average U.S. temperature and per-capita carbon dioxide emissions from ${firstYear} to ${latest.year}.`
+				`Two-line chart comparing average U.S. temperature and per-capita carbon dioxide emissions from ${firstYear} to ${latest.year}.${polarVortexDescription}`
 			);
 		}
 	}
@@ -1106,6 +1175,78 @@ class Co2TrendVis {
 			.attr("stroke-width", 1.5)
 			.append("title")
 			.text(formatPointLabel);
+
+		const polarVortexPoint = vis.displayData.find(d =>
+			getYear(d) === 2014 &&
+			Number.isFinite(getTemperature(d))
+		);
+
+		if (polarVortexPoint) {
+			const calloutColor = "#4b83a6";
+			const pointX = x(getYear(polarVortexPoint));
+			const pointY = yTemperature(getTemperature(polarVortexPoint));
+			const labelWidth = isCompact ? 108 : 128;
+			const labelHeight = 40;
+			const labelX = Math.max(8, Math.min(innerWidth - labelWidth - 8, pointX + (isCompact ? 14 : 24)));
+			const labelY = Math.max(8, pointY - (isCompact ? 50 : 60));
+			const callout = chart.append("g")
+				.attr("class", "polar-vortex-callout");
+
+			callout.append("line")
+				.attr("x1", pointX)
+				.attr("x2", labelX + 8)
+				.attr("y1", pointY)
+				.attr("y2", labelY + labelHeight)
+				.attr("stroke", calloutColor)
+				.attr("stroke-width", 1.3)
+				.attr("stroke-opacity", 0.62)
+				.attr("stroke-linecap", "round");
+
+			callout.append("circle")
+				.attr("cx", pointX)
+				.attr("cy", pointY)
+				.attr("r", 6)
+				.attr("fill", "none")
+				.attr("stroke", calloutColor)
+				.attr("stroke-width", 2)
+				.attr("stroke-opacity", 0.72);
+
+			callout.append("circle")
+				.attr("cx", pointX)
+				.attr("cy", pointY)
+				.attr("r", 2.8)
+				.attr("fill", calloutColor)
+				.attr("fill-opacity", 0.82)
+				.attr("stroke", "#ffffff")
+				.attr("stroke-width", 1.5);
+
+			callout.append("rect")
+				.attr("x", labelX)
+				.attr("y", labelY)
+				.attr("width", labelWidth)
+				.attr("height", labelHeight)
+				.attr("rx", 8)
+				.attr("fill", "#f7faf9")
+				.attr("fill-opacity", 0.92)
+				.attr("stroke", calloutColor)
+				.attr("stroke-opacity", 0.32);
+
+			callout.append("text")
+				.attr("x", labelX + 10)
+				.attr("y", labelY + 17)
+				.attr("fill", calloutColor)
+				.attr("font-size", 12)
+				.attr("font-weight", 800)
+				.text("2014 Polar Vortex");
+
+			callout.append("text")
+				.attr("x", labelX + 10)
+				.attr("y", labelY + 31)
+				.attr("fill", "#64717f")
+				.attr("font-size", 10)
+				.attr("font-weight", 700)
+				.text("temperature dip");
+		}
 
 		const latestPoint = vis.displayData.at(-1);
 		const latestX = x(getYear(latestPoint));
@@ -1473,7 +1614,10 @@ class ExtremeEventTimelineVis {
 			.attr("role", "group")
 			.attr("aria-label", "Extreme weather chart controls");
 
-		const buttons = controls.selectAll("button")
+		const typeControls = controls.append("div")
+			.attr("class", "event-type-controls");
+
+		const buttons = typeControls.selectAll("button")
 			.data(filterOptions)
 			.join("button")
 			.attr("type", "button")
@@ -1498,19 +1642,26 @@ class ExtremeEventTimelineVis {
 		buttons.append("span")
 			.text(d => d.label);
 
+		typeControls.append("p")
+			.attr("class", "event-type-explainer")
+			.text("Click on a disaster type to filter by that specific disaster. Click on it again to return to unfiltered view.");
+
 		const yearFocusId = `${vis.parentElement}-year-focus`;
 		const yearFocus = controls.append("div")
 			.attr("class", "event-year-focus");
 
-		yearFocus.append("label")
+		const yearFocusControls = yearFocus.append("div")
+			.attr("class", "event-year-focus-controls");
+
+		yearFocusControls.append("label")
 			.attr("for", yearFocusId)
 			.text("Focus years");
 
-		const yearSelect = yearFocus.append("select")
+		const yearSelect = yearFocusControls.append("select")
 			.attr("id", yearFocusId)
 			.attr("class", "event-year-select")
 			.attr("multiple", true)
-			.attr("size", Math.min(4, allYears.length))
+			.attr("size", Math.min(3, allYears.length))
 			.attr("aria-label", "Focus chart on selected years")
 			.on("change", function() {
 				vis.focusedYears = Array.from(this.selectedOptions, option => Number(option.value))
@@ -1534,7 +1685,7 @@ class ExtremeEventTimelineVis {
 			})
 			.text(d => d.label);
 
-		yearFocus.append("button")
+		yearFocusControls.append("button")
 			.attr("type", "button")
 			.attr("class", "small-button event-reset-button")
 			.property("disabled", !vis.focusedYears.length)
@@ -1550,14 +1701,19 @@ class ExtremeEventTimelineVis {
 				vis.wrangleData();
 			});
 
+		yearFocus.append("p")
+			.attr("class", "event-year-explainer")
+			.text("Click on a year to zoom in. More than one year can be selected at a time. Click reset to unselect all years.");
+
 		const container = document.getElementById(vis.parentElement);
 		const width = container.clientWidth || 760;
 		const isCompact = width < 640;
 		const isLegendCompact = width < 760;
+		const legendExplainerHeight = isLegendCompact ? 88 : 64;
 		const margin = {
-			top: isLegendCompact ? 134 : 116,
+			top: (isLegendCompact ? 118 : 92) + legendExplainerHeight,
 			right: isCompact ? 30 : 44,
-			bottom: 54,
+			bottom: isCompact ? 44 : 46,
 			left: isCompact ? 54 : 72
 		};
 		const selectedYearSet = new Set(vis.focusedYears);
@@ -1580,7 +1736,7 @@ class ExtremeEventTimelineVis {
 		const yearSpan = Math.max(1, lastYear - firstYear);
 		const spreadFocusedYears = isFocused && years.length > 1;
 		const svgWidth = width;
-		const height = Math.max(isCompact ? 370 : 410, Math.min(500, Math.round(width * 0.34)));
+		const height = Math.max(isCompact ? 330 : 350, Math.min(430, Math.round(width * 0.28))) + legendExplainerHeight;
 		const innerWidth = svgWidth - margin.left - margin.right;
 		const innerHeight = height - margin.top - margin.bottom;
 		const circleGap = isCompact ? 2 : 4;
@@ -1590,7 +1746,7 @@ class ExtremeEventTimelineVis {
 		const maxRadiusForYearCount = (innerWidth - 16 - circleGap * Math.max(0, years.length - 1)) / (2 * (years.length + 1));
 		const maxRadiusForWidth = Math.min(maxRadiusForYearSpan, maxRadiusForYearCount);
 		const maxCircleRadius = isFocused
-			? (isCompact ? 62 : 92)
+			? (isCompact ? 52 : 76)
 			: (isCompact ? 14 : 22);
 		const largestCircleRadius = Math.max(
 			0.8,
@@ -1771,7 +1927,7 @@ class ExtremeEventTimelineVis {
 
 		const ringLegend = svg.append("g")
 			.attr("class", "event-ring-legend")
-			.attr("transform", `translate(${margin.left},28)`);
+			.attr("transform", `translate(${margin.left},${isLegendCompact ? 14 : 12})`);
 
 		ringLegend.append("text")
 			.attr("class", "event-state-title")
@@ -1780,7 +1936,7 @@ class ExtremeEventTimelineVis {
 			.text(graphStateTitle);
 
 		const ringSample = ringLegend.append("g")
-			.attr("transform", "translate(24,50)");
+			.attr("transform", `translate(24,${isLegendCompact ? 42 : 44})`);
 
 		ringSample.append("use")
 			.attr("class", "event-icon")
@@ -1807,8 +1963,9 @@ class ExtremeEventTimelineVis {
 		});
 
 		const ringLegendText = ringLegend.append("g")
-			.attr("transform", "translate(70,36)");
+			.attr("transform", `translate(70,${isLegendCompact ? 28 : 30})`);
 
+		const legendLabelX = 22;
 		const legendItems = [
 			{
 				key: "events",
@@ -1863,7 +2020,7 @@ class ExtremeEventTimelineVis {
 			}
 
 			group.append("text")
-				.attr("x", 22)
+				.attr("x", legendLabelX)
 				.attr("y", 4)
 				.attr("fill", "#64717f")
 				.attr("font-size", 11)
@@ -1877,10 +2034,26 @@ class ExtremeEventTimelineVis {
 		// 	.attr("y", isLegendCompact ? 104 : 76)
 		// 	.text("Click on an element to remove that metric from the graph. Click on it again to return it. The size of circles is proportional to its affect");
 
+		const legendTextAvailableWidth = Math.max(1, innerWidth - 70 - legendLabelX);
+		const legendExplainerWidth = isLegendCompact
+			? legendTextAvailableWidth
+			: Math.min(430, legendTextAvailableWidth);
+		const legendExplainerY = isLegendCompact ? 66 : 22;
+		const legendExplainer = ringLegendText.append("foreignObject")
+			.attr("x", legendLabelX)
+			.attr("y", legendExplainerY)
+			.attr("width", legendExplainerWidth)
+			.attr("height", legendExplainerHeight);
+
+		legendExplainer.append("xhtml:p")
+			.attr("class", "event-legend-explainer")
+			.text("The relative impact is represented by the radius of the ring. Click on a metric in the legend to remove it from the visualization. Click on it again to bring it back.");
+
 		svg.append("text")
 			.attr("class", "event-selection-note")
 			.attr("x", margin.left)
-			.attr("y", margin.top - 16);
+			.attr("y", margin.top + 12)
+			.text("Click on a point to view specific data");
 
 		const grid = chart.append("g")
 			.attr("class", "grid event-grid")
@@ -1924,14 +2097,94 @@ class ExtremeEventTimelineVis {
 			.attr("text-anchor", "middle")
 			.text("Number of Events");
 
+		const eventTooltipWidth = isCompact ? 210 : 236;
+		const eventTooltipHeight = 124;
+		const eventTooltip = chart.append("g")
+			.attr("class", "event-click-tooltip")
+			.attr("pointer-events", "none")
+			.style("display", "none");
+
+		eventTooltip.append("rect")
+			.attr("width", eventTooltipWidth)
+			.attr("height", eventTooltipHeight)
+			.attr("rx", 10)
+			.attr("fill", "#ffffff")
+			.attr("stroke", "#d9dfdf")
+			.style("filter", "drop-shadow(0 8px 18px rgba(23, 33, 43, 0.18))");
+
+		const eventTooltipTitle = eventTooltip.append("text")
+			.attr("x", 12)
+			.attr("y", 22)
+			.attr("fill", "#17212b")
+			.attr("font-size", 13)
+			.attr("font-weight", 900);
+
+		const eventTooltipLines = [42, 58, 74, 90, 106].map(yPosition =>
+			eventTooltip.append("text")
+				.attr("x", 12)
+				.attr("y", yPosition)
+				.attr("fill", "#344350")
+				.attr("font-size", 11)
+				.attr("font-weight", 750)
+		);
+
+		const hideEventTooltip = () => {
+			eventTooltip.style("display", "none");
+		};
+
+		const showEventTooltip = (event, d) => {
+			event.stopPropagation();
+
+			const anchorX = x(d.year);
+			const anchorY = y(d.disasterEvents);
+			const preferredTooltipX = anchorX < innerWidth * 0.58
+				? anchorX + maxOuterRadius + 14
+				: anchorX - eventTooltipWidth - maxOuterRadius - 14;
+			const tooltipX = Math.max(
+				6,
+				Math.min(innerWidth - eventTooltipWidth - 6, preferredTooltipX)
+			);
+			const tooltipY = Math.max(
+				6,
+				Math.min(innerHeight - eventTooltipHeight - 6, anchorY - eventTooltipHeight / 2)
+			);
+
+			eventTooltipTitle.text(`${d.year}: ${d.disasterType}`);
+			[
+				`${formatComma(d.disasterEvents)} events`,
+				`Deaths: ${formatComma(d.totalDeaths)}`,
+				`Affected: ${formatPeople(d.peopleAffected)}`,
+				`Damages: ${formatMoney(d.totalDamage)}`,
+			].forEach((line, index) => {
+				eventTooltipLines[index].text(line);
+			});
+
+			eventTooltip
+				.attr("transform", `translate(${tooltipX},${tooltipY})`)
+				.style("display", null)
+				.raise();
+		};
+
+		svg.on("click", hideEventTooltip);
+
 		const nodes = chart.selectAll("g.event-circle-node")
 			.data(chartData, d => d.year)
 			.join("g")
 			.attr("class", d => `event-circle-node${selectedYearSet.has(d.year) ? " focused" : ""}`)
-			.attr("transform", d => `translate(${x(d.year)},${y(d.disasterEvents)})`);
+			.attr("transform", d => `translate(${x(d.year)},${y(d.disasterEvents)})`)
+			.attr("role", "button")
+			.attr("tabindex", 0)
+			.attr("aria-label", d => `${d.year} ${d.disasterType}: ${formatComma(d.disasterEvents)} events, ${formatComma(d.totalDeaths)} deaths, ${formatPeople(d.peopleAffected)} people affected, ${formatMoney(d.totalDamage)} damages`)
+			.on("click", showEventTooltip)
+			.on("keydown", function(event, d) {
+				if (event.key === "Enter" || event.key === " ") {
+					event.preventDefault();
+					showEventTooltip(event, d);
+				}
+			});
 
 		metricLayers.slice().reverse().forEach(layer => {
-			const visibleCircle = nodes.append("circle")
+			nodes.append("circle")
 				.attr("class", `event-circle event-circle-${layer.key}`)
 				.attr("display", d => isLayerVisible(layer.key) && layer.value(d) > 0 ? null : "none")
 				.attr("r", d => ringRadius(d, layer))
@@ -1940,9 +2193,6 @@ class ExtremeEventTimelineVis {
 				.attr("stroke", layer.stroke)
 				.attr("stroke-width", layer.strokeWidth)
 				.attr("stroke-opacity", 0.88);
-
-			visibleCircle.append("title")
-				.text(d => `${d.year}: ${layer.label}\n${layer.valueLabel(d)}\nMetric scope: ${d.metricScope}\nShown event count: ${formatComma(d.disasterEvents)} ${d.disasterType} events\nDeaths: ${formatComma(d.totalDeaths)}\nPeople affected: ${formatPeople(d.peopleAffected)}\nDamage: ${formatMoney(d.totalDamage)}`);
 		});
 
 		const eventIcons = nodes.append("use")
@@ -1954,9 +2204,6 @@ class ExtremeEventTimelineVis {
 			.attr("y", d => -eventIconSize(d) / 2)
 			.attr("width", d => eventIconSize(d))
 			.attr("height", d => eventIconSize(d));
-
-		eventIcons.append("title")
-			.text(d => `${d.year}: ${formatComma(d.disasterEvents)} ${d.disasterType} events\nMode: ${selectedFilterLabel}\nMetric scope: ${d.metricScope}\nDeaths: ${formatComma(d.totalDeaths)}\nPeople affected: ${formatPeople(d.peopleAffected)}\nDamage: ${formatMoney(d.totalDamage)}`);
 
 		if (focusedRows.length && focusedRows.length <= 4) {
 			focusedRows.forEach((focusedRow, rowIndex) => {
@@ -2598,10 +2845,7 @@ class HumanImpactVis {
 		const lastYear = vis.displayData.at(-1).year;
 		const formatComma = d3.format(",");
 		const getYear = d => Number(d.year);
-		const getAffected = d => Number(d.peopleAffected);
 		const getDeaths = d => Number(d.totalDeaths);
-		const maxAffectedRow = d3.greatest(vis.displayData, getAffected);
-		const maxDeathsRow = d3.greatest(vis.displayData, getDeaths);
 		const maxDeaths = d3.max(vis.displayData, getDeaths) || 1;
 		const width = containerNode.clientWidth || 760;
 		const isCompact = width < 760;
@@ -2714,7 +2958,7 @@ class HumanImpactVis {
 			}
 
 			vis.selectedYear = d.year;
-			vis.wrangleData();
+			renderSelectedYear(true);
 		}
 
 		rows.append("rect")
@@ -2844,118 +3088,227 @@ class HumanImpactVis {
 			.attr("font-weight", 700)
 			.text("Total deaths");
 
-		chart.append("text")
-			.attr("class", "impact-overflow-label")
-			.attr("x", innerWidth)
-			.attr("y", -8)
-			.attr("text-anchor", "end")
-			.text(`Max: ${formatDeathLabel(maxDeathsRow.totalDeaths)}`);
-
 		const detail = layout.append("div")
 			.attr("class", "impact-detail-panel")
 			.attr("aria-live", "polite");
 		const defaultAffectedIconValue = 20000;
-		const affectedIconValue = selectedYearData.year === 2016
-			? 1000000
-			: defaultAffectedIconValue;
-		const affectedIconCount = selectedYearData.peopleAffected > 0
-			? Math.max(1, Math.ceil(selectedYearData.peopleAffected / affectedIconValue))
-			: 0;
-		const useDenseIcons = affectedIconCount > 120;
-		const iconScale = useDenseIcons ? 0.62 : 1;
-		const iconWidth = useDenseIcons ? 16 : 30;
-		const iconHeight = useDenseIcons ? 24 : 40;
-		const iconPanelWidth = isCompact
-			? Math.max(240, width - 44)
-			: Math.max(280, Math.floor((width - 44) * 0.48));
-		const iconColumns = Math.max(6, Math.floor(iconPanelWidth / iconWidth));
-		const iconRows = Math.max(1, Math.ceil(affectedIconCount / iconColumns));
-		const iconSvgWidth = iconColumns * iconWidth;
-		const iconSvgHeight = iconRows * iconHeight + 18;
-
 		const detailCopy = detail.append("div")
 			.attr("class", "impact-detail-copy");
+		const iconPanel = detail.append("div")
+			.attr("class", "impact-icon-panel");
 
-		detailCopy.append("span")
-			.attr("class", "impact-detail-kicker")
-			.text(`Selected year: ${selectedYearData.year}`);
+		const iconScaleLabel = iconPanel.append("p")
+			.attr("class", "impact-icon-scale");
 
-		detailCopy.append("strong")
-			.attr("class", "impact-total")
-			.text(formatComma(selectedYearData.peopleAffected));
+		const iconNote = iconPanel.append("p")
+			.attr("class", "impact-icon-note")
+			.style("display", "none");
 
-		detailCopy.append("p")
-			.text("people affected by weather-related disasters");
+		const iconScroll = iconPanel.append("div")
+			.attr("class", "impact-icon-scroll");
 
-		const statGrid = detailCopy.append("div")
-			.attr("class", "impact-stat-grid");
+		const iconSvg = iconScroll.append("svg")
+			.attr("aria-hidden", "true");
 
-		[
-			{ label: "Deaths", value: formatComma(selectedYearData.totalDeaths) },
-			{ label: "Weather events", value: formatComma(selectedYearData.disasterEvents) }
-		].forEach(item => {
-			const stat = statGrid.append("div");
-			stat.append("span").text(item.label);
-			stat.append("strong").text(item.value);
-		});
+		const iconLayer = iconSvg.append("g")
+			.attr("class", "impact-icon-layer");
+		let previousIconLayout = null;
 
 		const selectedYearNotes = {
 			2005: "Deaths were especially high in 2005 because of Hurricane Katrina.",
 			2024: "Deaths were especially high in 2024 because of Hurricane Helene."
 		};
 
-		if (selectedYearNotes[selectedYearData.year]) {
+		function getSelectedYearData() {
+			return vis.displayData.find(row => row.year === vis.selectedYear);
+		}
+
+		function updateContainerLabel(yearData) {
+			if (!containerNode || !yearData) {
+				return;
+			}
+
+			containerNode.setAttribute(
+				"aria-label",
+				`Linked view. Click a year in the deaths bar chart to update people affected. Selected year ${yearData.year}: ${formatComma(yearData.peopleAffected)} people affected and ${formatComma(yearData.totalDeaths)} deaths.`
+			);
+		}
+
+		function getIconLayout(yearData) {
+			const affectedIconValue = yearData.year === 2016
+				? 1000000
+				: defaultAffectedIconValue;
+			const affectedIconCount = yearData.peopleAffected > 0
+				? Math.max(1, Math.ceil(yearData.peopleAffected / affectedIconValue))
+				: 0;
+			const useDenseIcons = affectedIconCount > 120;
+			const iconScale = useDenseIcons ? 0.62 : 1;
+			const iconWidth = useDenseIcons ? 16 : 30;
+			const iconHeight = useDenseIcons ? 24 : 40;
+			const iconPanelWidth = isCompact
+				? Math.max(240, width - 44)
+				: Math.max(280, Math.floor((width - 44) * 0.48));
+			const iconColumns = Math.max(6, Math.floor(iconPanelWidth / iconWidth));
+			const iconRows = Math.max(1, Math.ceil(affectedIconCount / iconColumns));
+
+			return {
+				affectedIconValue,
+				affectedIconCount,
+				useDenseIcons,
+				iconScale,
+				iconWidth,
+				iconHeight,
+				iconColumns,
+				iconSvgWidth: iconColumns * iconWidth,
+				iconSvgHeight: iconRows * iconHeight + 18
+			};
+		}
+
+		function getIconTransform(index, iconLayout, scaleMultiplier = 1) {
+			const xOffset = index % iconLayout.iconColumns * iconLayout.iconWidth + (iconLayout.useDenseIcons ? 2 : 6);
+			const yOffset = Math.floor(index / iconLayout.iconColumns) * iconLayout.iconHeight + 4;
+			const scale = iconLayout.iconScale * scaleMultiplier;
+
+			return `translate(${xOffset},${yOffset}) scale(${scale})`;
+		}
+
+		function renderSelectedYear(animate = false) {
+			const yearData = getSelectedYearData();
+
+			if (!yearData) {
+				return;
+			}
+
+			updateContainerLabel(yearData);
+
+			rows.classed("selected", row => row.year === vis.selectedYear);
+			rows.select(".impact-bar")
+				.transition()
+				.duration(animate ? 260 : 0)
+				.attr("fill", row => row.year === vis.selectedYear ? "#c84b31" : deathColor(getDeaths(row)));
+
+			detailCopy.html("");
+			detailCopy.append("span")
+				.attr("class", "impact-detail-kicker")
+				.text(`Selected year: ${yearData.year}`);
+
+			detailCopy.append("strong")
+				.attr("class", "impact-total")
+				.text(formatComma(yearData.peopleAffected));
+
 			detailCopy.append("p")
-				.attr("class", "impact-context-note")
-				.text(selectedYearNotes[selectedYearData.year]);
-		}
+				.text("people affected by weather-related disasters");
 
-		const iconPanel = detail.append("div")
-			.attr("class", "impact-icon-panel");
+			const statGrid = detailCopy.append("div")
+				.attr("class", "impact-stat-grid");
 
-		iconPanel.append("p")
-			.text(`Each figure represents about ${formatAffectedLabel(affectedIconValue)} people affected.`);
+			[
+				{ label: "Deaths", value: formatComma(yearData.totalDeaths) },
+				{ label: "Weather events", value: formatComma(yearData.disasterEvents) }
+			].forEach(item => {
+				const stat = statGrid.append("div");
+				stat.append("span").text(item.label);
+				stat.append("strong").text(item.value);
+			});
 
-		if (selectedYearData.year === 2016) {
-			iconPanel.append("p")
-				.attr("class", "impact-icon-note")
-				.text("2016 uses a larger icon value.");
-		}
+			if (selectedYearNotes[yearData.year]) {
+				detailCopy.append("p")
+					.attr("class", "impact-context-note")
+					.text(selectedYearNotes[yearData.year]);
+			}
 
-		const iconScroll = iconPanel.append("div")
-			.attr("class", "impact-icon-scroll");
+			const iconLayout = getIconLayout(yearData);
+			const transitionWidth = animate && previousIconLayout
+				? Math.max(previousIconLayout.iconSvgWidth, iconLayout.iconSvgWidth)
+				: iconLayout.iconSvgWidth;
+			const transitionHeight = animate && previousIconLayout
+				? Math.max(previousIconLayout.iconSvgHeight, iconLayout.iconSvgHeight)
+				: iconLayout.iconSvgHeight;
 
-		const iconSvg = iconScroll.append("svg")
-			.attr("viewBox", `0 0 ${iconSvgWidth} ${iconSvgHeight}`)
-			.attr("aria-hidden", "true");
+			iconScaleLabel.text(`Each figure represents about ${formatAffectedLabel(iconLayout.affectedIconValue)} people affected.`);
+			iconNote
+				.style("display", yearData.year === 2016 ? null : "none")
+				.text(yearData.year === 2016 ? "2016 uses a larger icon value." : "");
 
-		const icons = iconSvg.selectAll("g.impact-icon")
-			.data(d3.range(affectedIconCount))
-			.join("g")
-			.attr("class", "impact-icon")
-			.attr("transform", index => `translate(${(index % iconColumns) * iconWidth + (useDenseIcons ? 2 : 6)},${Math.floor(index / iconColumns) * iconHeight + 4}) scale(${iconScale})`);
+			iconSvg
+				.interrupt()
+				.attr("viewBox", `0 0 ${transitionWidth} ${transitionHeight}`);
 
-		icons.append("circle")
-			.attr("cx", 9)
-			.attr("cy", 7)
-			.attr("r", 6);
+			const iconData = d3.range(iconLayout.affectedIconCount);
+			const transition = d3.transition()
+				.duration(animate ? 520 : 0)
+				.ease(d3.easeCubicOut);
 
-		icons.append("rect")
-			.attr("x", 4)
-			.attr("y", 15)
-			.attr("width", 10)
-			.attr("height", 18)
-			.attr("rx", 5);
+			const icons = iconLayer.selectAll("g.impact-icon")
+				.data(iconData, index => index);
 
-		if (!affectedIconCount) {
-			iconSvg.append("text")
+			icons.exit()
+				.transition(transition)
+				.delay((index, order) => animate ? Math.min(order, 36) * 5 : 0)
+				.attr("opacity", 0)
+				.attr("transform", index => getIconTransform(index, previousIconLayout || iconLayout, 0.35))
+				.remove();
+
+			const enteringIcons = icons.enter()
+				.append("g")
+				.attr("class", "impact-icon")
+				.attr("opacity", 0)
+				.attr("transform", index => getIconTransform(index, iconLayout, 0.35));
+
+			enteringIcons.append("circle")
+				.attr("cx", 9)
+				.attr("cy", 7)
+				.attr("r", 6);
+
+			enteringIcons.append("rect")
+				.attr("x", 4)
+				.attr("y", 15)
+				.attr("width", 10)
+				.attr("height", 18)
+				.attr("rx", 5);
+
+			enteringIcons.merge(icons)
+				.transition(transition)
+				.delay((index, order) => animate ? Math.min(order, 48) * 4 : 0)
+				.attr("opacity", 1)
+				.attr("transform", index => getIconTransform(index, iconLayout));
+
+			const noAffectedLabel = iconSvg.selectAll("text.impact-empty-message")
+				.data(iconLayout.affectedIconCount ? [] : [yearData], row => row.year);
+
+			noAffectedLabel.exit()
+				.transition(transition)
+				.attr("opacity", 0)
+				.remove();
+
+			noAffectedLabel.enter()
+				.append("text")
+				.attr("class", "impact-empty-message")
 				.attr("x", 0)
 				.attr("y", 24)
 				.attr("fill", "#64717f")
 				.attr("font-size", 13)
 				.attr("font-weight", 800)
-				.text("No people affected reported for the selected year.");
+				.attr("opacity", 0)
+				.text("No people affected reported for the selected year.")
+				.transition(transition)
+				.attr("opacity", 1);
+
+			if (
+				animate &&
+				(transitionWidth !== iconLayout.iconSvgWidth || transitionHeight !== iconLayout.iconSvgHeight)
+			) {
+				iconSvg.transition()
+					.delay(520)
+					.duration(260)
+					.ease(d3.easeCubicOut)
+					.attr("viewBox", `0 0 ${iconLayout.iconSvgWidth} ${iconLayout.iconSvgHeight}`);
+			}
+
+			previousIconLayout = iconLayout;
 		}
+
+		renderSelectedYear(false);
 	}
 }
 
