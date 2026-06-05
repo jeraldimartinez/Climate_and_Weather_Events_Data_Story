@@ -8,7 +8,7 @@ The project is submitted as a static website made with HTML, CSS, JavaScript, D3
 
 ## Project Links
 
-- Project website: `https://jeraldimartinez.github.io/Climate_and_Weather_Events_Data_Story/`
+- Project website: https://jeraldimartinez.github.io/Climate_and_Weather_Events_Data_Story/
 - Screencast video: TODO: add screencast URL
 
 ## Team
